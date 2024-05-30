@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/static/index.css" rel="stylesheet" />
+    <link href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css" rel="stylesheet" />
+    <link href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css" rel="stylesheet" />
+    <script src="/static/axois@1.7.2/axios.min.js"></script>
+    <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
+    <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+  </head>
+  <body class="bg-gray-[30]">
+    <header class="mx-10">
+      <div>
+        <nav class="flex justify-between items-center py-4 mx-3 lg:px-[15%]">
+          <div>
+            <a href="/" class="-m-1.5 p-1.5">
+              <span class="sr-only">Current</span>
+              <img class="h-10 w-auto" src="/static/img@20240530/Current.svg" alt="">
+            </a>
+          </div>
+          <div id="login-entry">
+            <a href="/login" class="px-3 py-1.5 rounded text-white bg-indigo-600">登录</a>
+          </div>
+          <div id="userinfo-show" class="hidden">
+            <p><span id="username"></span> <a id="logout" href="#" class="rounded p-1 hover:bg-gray-100">退出登录</a></p>
+          </div>
+      </div>
+    </header>
+    <div class="mx-10 lg:mx-[20%]">
+      <div id="issue-list" class="hidden">
+        <div class="flex flex-col lg:flex-row flex-nowrap rounded-lg border mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2>
+              第 7 期
+            </h2>
+            <p>
+              计划出版日期：2024-7-1
+            </p>
+            <p>
+              剩余天数：<label class="rounded p-1 bg-red-400 text-gray-50">5 天</label>
+            </p>
+          </div>
+          <div>
+            <a href="/issue/7" class="p-3 rounded hover:bg-gray-100">查看</a>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row flex-nowrap rounded-lg border mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i class="icon-ic_fluent_checkmark_circle_32_regular text-green-400 text-xl"></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2>
+              第 6 期
+            </h2>
+            <p>
+              出版日期：2024-6-1
+            </p>
+          </div>
+          <div>
+            <a href="/issue/" class="p-3 rounded hover:bg-gray-100">查看</a>
+          </div>
+        </div>
+      </div>
+      <div id="no-login-box" class="hidden flex justify-center rounded-lg border mb-3 p-5 w-full">
+        <p>登录到 Current，开始创作之旅。</p>
+      </div>
+    </div>
+    <script type="module">
+      var token = Cookies.get('token');
+      if(token != undefined) {
+        axios.get('/api/clients/status', {
+          headers: {
+            Authorization: token
+          }
+        }).then((result) => {
+          var data = result.data;
+          console.log(data);
+          if(data.code == 200) {
+            var username = data.data.username;
+            document.getElementById('username').innerText = username;
+            document.querySelector('#login-entry').classList.add('hidden');
+            document.querySelector('#userinfo-show').classList.remove('hidden');
+            document.querySelector('#issue-list').classList.remove('hidden');
+          } else {
+            token = undefined;
+            Cookies.remove('token');
+            document.querySelector('#no-login-box').classList.remove('hidden');
+            sendToast.warning('登录状态异常，请重新登录。')
+          }
+        });
+      } else {
+        document.querySelector('#no-login-box').classList.remove('hidden');
+      }
+    </script>
+    <script>
+      var token = Cookies.get('token');
+      document.getElementById('logout').addEventListener('click', (e) => {
+        e.preventDefault();
+        Cookies.remove('token');
+        axios.get('/api/clients/logout', {
+          headers: {
+            Authorization: token
+          }
+        });
+        window.location.reload();
+      });
+    </script>
+  </body>
+</html>

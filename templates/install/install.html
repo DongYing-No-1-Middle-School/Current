@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/static/index.css" rel="stylesheet" />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
+      rel="stylesheet"
+    />
+    <script src="/static/axois@1.7.2/axios.min.js"></script>
+    <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
+    <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+  </head>
+  <body class="bg-gray-[30]">
+    <div class="mx-10 lg:mx-[20%] mt-[15%]">
+      <div data-installstep="0" class="hidden rounded-lg border p-5 w-full">
+        <img
+          class="h-10 w-auto"
+          src="/static/img@20240530/Current.svg"
+          alt="Current Logo"
+        />
+        <p class="text-sm text-gray-500 mb-5">
+          Current - A intelligent platform for scholar newspaper.
+        </p>
+        <h2 class="text-lg mb-3">
+          欢迎使用 Current，本向导将引导您完成对 Current 的安装。
+        </h2>
+        <button
+          data-gotostep="1"
+          class="mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+        >
+          让我们开始吧
+        </button>
+      </div>
+      <div data-installstep="1" class="hidden rounded-lg border p-5 w-full">
+        <img
+          class="h-10 w-auto"
+          src="/static/img@20240530/Current.svg"
+          alt="Current Logo"
+        />
+        <p class="text-sm text-gray-500 mb-5">
+          Current - A intelligent platform for scholar newspaper.
+        </p>
+        <h2 class="text-lg mb-3">创建初始配置</h2>
+        <p>请填写以下初始配置项。</p>
+        <div>
+          <label
+            for="oriondb"
+            class="block text-sm font-medium leading-6 text-gray-900"
+            >OrionDB 数据库名称</label
+          >
+          <div class="mt-2">
+            <input
+              id="oriondb"
+              name="oriondb"
+              type="oriondb"
+              autocomplete="orion.db"
+              required
+              class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <button
+          id="step1-submit"
+          class="mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+        >
+          提交
+        </button>
+        <button
+          data-gotostep="2"
+          class="hidden mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+        >
+          下一步
+        </button>
+      </div>
+      <div data-installstep="2" class="hidden rounded-lg border p-5 w-full">
+        <img
+          class="h-10 w-auto"
+          src="/static/img@20240530/Current.svg"
+          alt="Current Logo"
+        />
+        <p class="text-sm text-gray-500 mb-5">
+          Current - A intelligent platform for scholar newspaper.
+        </p>
+        <h2 class="text-lg mb-3">创建数据库</h2>
+        <p>我们已经获得了所有需要的信息，现在我们将创建数据库。</p>
+        <button
+          id="step2-submit"
+          class="mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+        >
+          提交
+        </button>
+        <button
+          data-gotostep="3"
+          class="hidden mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+        >
+          下一步
+        </button>
+      </div>
+      <div data-installstep="3" class="hidden rounded-lg border p-5 w-full">
+        <img
+          class="h-10 w-auto"
+          src="/static/img@20240530/Current.svg"
+          alt="Current Logo"
+        />
+        <p class="text-sm text-gray-500 mb-5">
+          Current - A intelligent platform for scholar newspaper.
+        </p>
+        <h2 class="text-lg mb-3">创建基本用户</h2>
+        <p>以下信息将用户创建最高权限用户</p>
+        <div>
+          <label
+            for="username"
+            class="block text-sm font-medium leading-6 text-gray-900"
+            >用户名</label
+          >
+          <div class="mt-2">
+            <input
+              id="username"
+              name="username"
+              type="username"
+              autocomplete="username"
+              required
+              class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <label
+              for="password"
+              class="block text-sm font-medium leading-6 text-gray-900"
+              >密码</label
+            >
+          </div>
+          <div class="mt-2">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <label
+              for="grade"
+              class="block text-sm font-medium leading-6 text-gray-900"
+              >年级</label
+            >
+          </div>
+          <div class="mt-2">
+            <input
+              id="grade"
+              name="grade"
+              type="number"
+              autocomplete="grade"
+              required
+              class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between">
+            <label
+              for="classnum"
+              class="block text-sm font-medium leading-6 text-gray-900"
+              >班级</label
+            >
+          </div>
+          <div class="mt-2">
+            <input
+              id="classnum"
+              name="number"
+              type="classnum"
+              autocomplete="classnum"
+              required
+              class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+        <button
+          id="step3-submit"
+          class="mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+        >
+          提交
+        </button>
+        <button
+          data-gotostep="4"
+          class="hidden mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
+        >
+          下一步
+        </button>
+      </div>
+      <div data-installstep="4" class="hidden rounded-lg border p-5 w-full">
+        <img
+          class="h-10 w-auto"
+          src="/static/img@20240530/Current.svg"
+          alt="Current Logo"
+        />
+        <p class="text-sm text-gray-500 mb-5">
+          Current - A intelligent platform for scholar newspaper.
+        </p>
+        <h2 class="text-lg mb-3">安装完成</h2>
+        <p>现在，请重启 Current 进程，以启动主程序。</p>
+      </div>
+    </div>
+    <script>
+      document
+        .querySelectorAll("button[data-gotostep]")
+        .forEach(function (element) {
+          element.addEventListener("click", function () {
+            var currentStep = parseInt(this.getAttribute("data-gotostep"));
+            var previousStep = currentStep - 1;
+
+            // Hide previous step
+            var previousStepElement = document.querySelector(
+              '[data-installstep="' + previousStep + '"]'
+            );
+            if (previousStepElement) {
+              previousStepElement.classList.add("hidden");
+            }
+
+            // Remove hidden attribute from current step
+            var currentStepElement = document.querySelector(
+              '[data-installstep="' + currentStep + '"]'
+            );
+            if (currentStepElement) {
+              currentStepElement.classList.remove("hidden");
+            }
+          });
+        });
+    </script>
+    <script>
+      axios.post("/", { step: 0 }).then(function (response) {
+        if (response.data.success === true) {
+          document.querySelector(`[data-installstep="${response.data.step}"]`).classList.remove("hidden");
+        }
+      });
+    </script>
+    <script>
+      document.querySelector("#step1-submit").addEventListener("click", async function () {
+        var oriondb = document.querySelector("#oriondb").value;
+        var response = await axios.post("/", {
+          step: 1,
+          oriondb: oriondb,
+        });
+        if (response.data.success === true) {
+          document.querySelector("button[data-gotostep='2']").classList.remove("hidden");
+          document.querySelector("button#step1-submit").classList.add("hidden");
+        } else {
+          toast.error(response.data.message);
+        }
+      });
+    </script>
+    <script>
+      document.querySelector("#step2-submit").addEventListener("click", async function () {
+        var response = await axios.post("/", {
+          step: 2,
+        });
+        if (response.data.success === true) {
+          document.querySelector("button[data-gotostep='3']").classList.remove("hidden");
+          document.querySelector("button#step2-submit").classList.add("hidden");
+        } else {
+          toast.error(response.data.message);
+        }
+      });
+    </script>
+    <script>
+      document.querySelector("#step3-submit").addEventListener("click", async function () {
+        var username = document.querySelector("#username").value;
+        var password = document.querySelector("#password").value;
+        var grade = document.querySelector("#grade").value;
+        var classnum = document.querySelector("#classnum").value;
+        var response = await axios.post("/", {
+          step: 3,
+          username: username,
+          password: password,
+          grade: grade,
+          classnum: classnum,
+        });
+        if (response.data.success === true) {
+          document.querySelector("button[data-gotostep='4']").classList.remove("hidden");
+          document.querySelector("button#step3-submit").classList.add("hidden");
+        } else {
+          toast.error(response.data.message);
+        }
+      });
+    </script>
+  </body>
+</html>
