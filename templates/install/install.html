@@ -47,24 +47,7 @@
           Current - A intelligent platform for scholar newspaper.
         </p>
         <h2 class="text-lg mb-3">创建初始配置</h2>
-        <p>请填写以下初始配置项。</p>
-        <div>
-          <label
-            for="oriondb"
-            class="block text-sm font-medium leading-6 text-gray-900"
-            >OrionDB 数据库名称</label
-          >
-          <div class="mt-2">
-            <input
-              id="oriondb"
-              name="oriondb"
-              type="oriondb"
-              autocomplete="orion.db"
-              required
-              class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
+        <p>请点击以下按钮初始配置项。</p>
         <button
           id="step1-submit"
           class="mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
@@ -111,7 +94,7 @@
         <p class="text-sm text-gray-500 mb-5">
           Current - A intelligent platform for scholar newspaper.
         </p>
-        <h2 class="text-lg mb-3">创建基本用户</h2>
+        <h2 class="text-lg mb-3">创建基本用户并分配权限</h2>
         <p>以下信息将用户创建最高权限用户</p>
         <div>
           <label
@@ -187,6 +170,7 @@
             />
           </div>
         </div>
+        <p>同时，我们会为普通用户分配权限。</p>
         <button
           id="step3-submit"
           class="mt-5 justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white"
@@ -248,10 +232,8 @@
     </script>
     <script>
       document.querySelector("#step1-submit").addEventListener("click", async function () {
-        var oriondb = document.querySelector("#oriondb").value;
         var response = await axios.post("/", {
-          step: 1,
-          oriondb: oriondb,
+          step: 1
         });
         if (response.data.success === true) {
           document.querySelector("button[data-gotostep='2']").classList.remove("hidden");

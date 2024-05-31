@@ -19,13 +19,12 @@ def index():
             return {"code": 200, "success": True, "step": nowstep}
         if step == 1:
             global oriondb
-            oriondb = request.json["oriondb"]
             config_template = {
                 "flask": {
                     "debug": False,
                 },
                 "oriondb": {
-                    "path": oriondb
+                    "path": 'orion.db'
                 }
             }
             with open("config.json", "w") as f:
@@ -50,20 +49,23 @@ def index():
                 subject4    text,
                 leader      text,
                 editors     text,
-                respeditors text
+                respeditor  text,
+                ispublished integer
             );""")
             c.execute("""create table entries
             (
-                uuid        text,
+                uuid        text
+                    constraint entries_pk
+                        primary key,
                 issue_id    integer,
                 page        integer,
                 title       text,
                 origin      text,
+                wordcount   integer,
                 description text,
-                author      text,
-                action      text,
-                constraint entries_pk
-                    primary key (uuid)
+                selector    text,
+                reviewer    text,
+                isselected  integer
             );""")
             nowstep = 3
             return {"code": 200, "success": True}
@@ -75,6 +77,9 @@ def index():
             users.create(username, password, grade=grade, classnum=classnum)
             permissions.grant(username, "group.default")
             permissions.grant(username, "*")
+            permissions.grant("group.default", "entries.create.*")
+            permissions.grant("group.default", "entries.review.*")
             nowstep = 4
             return {"code": 200, "success": True}
+        return {"code": 400, "success": False, "message": "Bad request."}
     return render_template("install/install.html")
