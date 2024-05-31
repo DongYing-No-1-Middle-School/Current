@@ -13,7 +13,7 @@ class Users:
 
     oriondb = "orion.db"
 
-    def __init__(self, oriondb="orion.db", extras=None):
+    def __init__(self, oriondb="orion.db", extras=None) -> None:
         self.oriondb = oriondb
         if extras is None:
             extras = ["email"]
@@ -27,7 +27,7 @@ class Users:
         conn.commit()
         conn.close()
 
-    def get_by_name(self, username):
+    def get_by_name(self, username) -> dict:
         """Get user by name.
 
         Args:
@@ -48,7 +48,7 @@ class Users:
         else:
             return None
 
-    def get_by_id(self, userid):
+    def get_by_id(self, userid) -> dict:
         """Get user by id.
 
         Args:
@@ -69,7 +69,7 @@ class Users:
         else:
             return None
 
-    def verify(self, username, passwd):
+    def verify(self, username, passwd) -> bool:
         """Verify user.
 
         Args:
@@ -90,7 +90,7 @@ class Users:
         else:
             return True
 
-    def create(self, username, passwd, **kwargs):
+    def create(self, username, passwd, **kwargs) -> None:
         """Create user.
 
         Args:
@@ -113,7 +113,7 @@ class Users:
         conn.commit()
         conn.close()
 
-    def delete(self, userid):
+    def delete(self, userid) -> None:
         """Delete user.
 
         Args:
@@ -124,7 +124,7 @@ class Users:
         conn.commit()
         conn.close()
 
-    def update(self, userid, **kwargs):
+    def update(self, userid, **kwargs) -> None:
         """Update user.
 
         Args:
@@ -134,13 +134,15 @@ class Users:
         c = conn.cursor()
         query = "UPDATE users SET "
         for key in kwargs:
+            if key == "passwd":
+                kwargs[key] = hashlib.sha256(kwargs[key].encode()).hexdigest()
             query += key + "=?, "
         query = query[:-2] + " WHERE id=?"
         c.execute(query, (*kwargs.values(), userid))
         conn.commit()
         conn.close()
 
-    def listall(self):
+    def listall(self) -> list:
         """List users.
 
         Returns:
@@ -156,4 +158,3 @@ class Users:
             res.append({col_names[i]: user[i] for i in range(len(user))})
             del res[-1]["passwd"]
         return res
-    

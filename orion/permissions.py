@@ -12,7 +12,7 @@ class Permissions:
 
     oriondb = "orion.db"
 
-    def __init__(self, oriondb="orion.db"):
+    def __init__(self, oriondb="orion.db") -> None:
         self.oriondb = oriondb
         conn = sqlite3.connect(self.oriondb)
         c = conn.cursor()
@@ -32,7 +32,7 @@ class Permissions:
         pattern = r'^[a-zA-Z0-9*.]+$'
         return bool(re.match(pattern, permission))
 
-    def grant(self, target, node):
+    def grant(self, target, node) -> None:
         """Grant permission.
 
         Args:
@@ -46,7 +46,7 @@ class Permissions:
         conn.commit()
         conn.close()
 
-    def revoke(self, target, node):
+    def revoke(self, target, node) -> None:
         """Revoke permission.
 
         Args:
@@ -58,7 +58,7 @@ class Permissions:
         conn.commit()
         conn.close()
 
-    def has_permission(self, target, node):
+    def has_permission(self, target, node) -> bool:
         """Check if target has permission.
 
         Args:
@@ -79,7 +79,28 @@ class Permissions:
         for p in permission:
             if p[1] in nodelist:
                 return True
-            if str(p[i]).startswith('group.'):
+            if str(p[1]).startswith('group.'):
                 if self.has_permission(p[i], node):
                     return True
         return False
+
+    def list_permissions(self, target) -> list:
+        """List permissions for target.
+
+        Args:
+            target (str): The target.
+
+        Returns:
+            list: The permissions."""
+        conn = sqlite3.connect(self.oriondb)
+        c = conn.cursor()
+        c.execute("SELECT * FROM permissions WHERE target=?", (target,))
+        permission = c.fetchall()
+        conn.close()
+        res = []
+        for p in permission:
+            if str(p[1]).startswith('group.'):
+                res.extend(self.list_permissions(p[1]))
+            else:
+                res.append(p[1])
+        return res

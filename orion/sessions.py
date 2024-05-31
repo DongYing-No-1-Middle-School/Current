@@ -13,7 +13,7 @@ class Sessions:
 
     oriondb = "orion.db"
 
-    def __init__(self, oriondb="orion.db"):
+    def __init__(self, oriondb="orion.db") -> None:
         self.oriondb = oriondb
         conn = sqlite3.connect(self.oriondb)
         c = conn.cursor()
@@ -22,24 +22,27 @@ class Sessions:
         conn.commit()
         conn.close()
 
-    def create(self, user):
+    def create(self, user) -> str:
         """Create session.
 
         Args:
             user (str): The user.
-        
+
         Returns:
             str: The session."""
         session = str(uuid.uuid4())
         created_at = int(time.time())
         conn = sqlite3.connect(self.oriondb)
         c = conn.cursor()
-        c.execute("INSERT INTO sessions (session, user, created_at) VALUES (?, ?, ?)", (session, user, created_at))
+        c.execute(
+            "INSERT INTO sessions (session, user, created_at) VALUES (?, ?, ?)",
+            (session, user, created_at),
+        )
         conn.commit()
         conn.close()
         return session
 
-    def delete(self, session):
+    def delete(self, session) -> None:
         """Delete session.
 
         Args:
@@ -50,7 +53,7 @@ class Sessions:
         conn.commit()
         conn.close()
 
-    def get_user(self, session):
+    def get_user(self, session) -> str:
         """Get user by session.
 
         Args:
@@ -65,10 +68,9 @@ class Sessions:
         conn.close()
         if user:
             return user[0]
-        else:
-            return None
+        return None
 
-    def delete_user_sessions(self, user):
+    def delete_user_sessions(self, user) -> None:
         """Delete all sessions of a user.
 
         Args:
@@ -76,5 +78,19 @@ class Sessions:
         conn = sqlite3.connect(self.oriondb)
         c = conn.cursor()
         c.execute("DELETE FROM sessions WHERE user=?", (user,))
+        conn.commit()
+        conn.close()
+
+    def purge_expired(self, days) -> None:
+        """Purge expired sessions.
+
+        Args:
+            days (int): The days."""
+        conn = sqlite3.connect(self.oriondb)
+        c = conn.cursor()
+        c.execute(
+            "DELETE FROM sessions WHERE created_at < ?",
+            (int(time.time()) - days * 24 * 60 * 60,),
+        )
         conn.commit()
         conn.close()
