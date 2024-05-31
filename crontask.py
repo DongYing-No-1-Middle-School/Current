@@ -12,6 +12,7 @@ permissions = orion.Permissions(oriondb)
 
 
 class Config:
+    """Scheduler configuration."""
     SCHEDULER_API_ENABLED = True
 
     JOBS = [

@@ -13,6 +13,8 @@ from flask_apscheduler import APScheduler
 from orion import user, permissions, sessions
 import orion
 
+import crontask
+
 # Check if installed
 if not os.path.exists("config.json"):
     print("Not installed.")
@@ -50,7 +52,7 @@ from routes.clients import clients
 app.register_blueprint(clients)
 
 # Register scheduler
-app.config.from_object(scheduler.Config())
+app.config.from_object(crontask.Config())
 crontab = APScheduler()
 crontab.init_app(app)
 crontab.start()
