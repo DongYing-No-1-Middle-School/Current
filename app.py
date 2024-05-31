@@ -49,11 +49,11 @@ app.register_blueprint(webpage)
 from routes.clients import clients
 app.register_blueprint(clients)
 
-# Register scheduler: NotImplemented
-# app.config.from_object(scheduler.Config())
-# crontab = APScheduler()
-# crontab.init_app(app)
-# crontab.start()
+# Register scheduler
+app.config.from_object(scheduler.Config())
+crontab = APScheduler()
+crontab.init_app(app)
+crontab.start()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
