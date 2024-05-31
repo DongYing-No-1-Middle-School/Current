@@ -3,17 +3,9 @@
 # Import libs
 import os
 import json
-import hashlib
-import sqlite3
-import uuid
 
-from flask import Flask, request, send_file, render_template
+from flask import Flask
 from flask_apscheduler import APScheduler
-
-from orion import user, permissions, sessions
-import orion
-
-import crontask
 
 # Check if installed
 if not os.path.exists("config.json"):
@@ -38,9 +30,6 @@ app.secret_key = os.urandom(24)
 # Initalize OrionDB
 oriondb = config["oriondb"]["path"]
 app.config["oriondb"] = oriondb
-users = orion.Users(oriondb, ['grade', 'classnum'])
-sessions = orion.Sessions(oriondb)
-permissions = orion.Permissions(oriondb)
 
 # Push context
 app.app_context().push()
@@ -50,8 +39,11 @@ from routes.webpage import webpage
 app.register_blueprint(webpage)
 from routes.clients import clients
 app.register_blueprint(clients)
+from routes.issues import issues
+app.register_blueprint(issues)
 
 # Register scheduler
+import crontask
 app.config.from_object(crontask.Config())
 crontab = APScheduler()
 crontab.init_app(app)
