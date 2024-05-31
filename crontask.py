@@ -18,7 +18,7 @@ class Config:
     JOBS = [
         {
             "id": "sessions_timeout",
-            "func": "scheduler:sessions_timeout",
+            "func": "crontask:sessions_timeout",
             "trigger": "interval",
             "seconds": 10,
         }
