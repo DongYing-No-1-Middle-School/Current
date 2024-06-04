@@ -80,7 +80,7 @@ class Permissions:
             if p[1] in nodelist:
                 return True
             if str(p[1]).startswith('group.'):
-                if self.has_permission(p[i], node):
+                if self.has_permission(p[1], node):
                     return True
         return False
 
