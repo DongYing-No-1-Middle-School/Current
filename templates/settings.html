@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Current</title>
+    <link href="/static/current@1.0.0/index.css" rel="stylesheet" />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
+      rel="stylesheet"
+    />
+    <script src="/static/axois@1.7.2/axios.min.js"></script>
+    <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
+    <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+    <script src="/static/current@1.0.0/index.js"></script>
+  </head>
+  <body class="h-full bg-[#fafafa]">
+    <header class="px-5 pb-2 bg-white border-b-2">
+      <div>
+        <nav class="flex flex-row justify-between items-center mx-3 pt-5 pb-2">
+          <div class="flex flex-row h-8">
+            <a href="/" class="">
+              <span class="sr-only">Current</span>
+              <img
+                class="h-6 w-auto"
+                src="/static/img@1.0.0/Current.svg"
+                alt=""
+              />
+            </a>
+            <div class="hidden login-show flex flex-row">
+              <i
+                class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
+              ></i>
+              <p>
+                <span id="username" class="font-bold"></span>
+                <a id="logout" href="#" class="rounded p-1 hover:bg-gray-100"
+                  >退出登录</a
+                >
+              </p>
+            </div>
+          </div>
+          <div class="login-hidden">
+            <button
+              data-href="/login"
+              class="px-3 py-1.5 rounded text-white bg-indigo-600"
+            >
+              登录
+            </button>
+          </div>
+        </nav>
+      </div>
+      <div class="hidden login-show">
+        <div class="flex flex-row gap-2">
+          <button data-href="/" class="px-3 py-1.5 rounded hover:bg-gray-100">
+            首页
+          </button>
+          <button
+            data-href="/drafts"
+            class="px-3 py-1.5 rounded hover:bg-gray-100"
+          >
+            草稿
+          </button>
+          <button
+            data-href="/settings"
+            class="px-3 py-1.5 rounded bg-gray-200"
+          >
+            个人设置
+          </button>
+          <button
+            data-href="/management"
+            data-with-permission="management.enter"
+            class="hidden px-3 py-1.5 rounded hover:bg-gray-100"
+          >
+            管理面板
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="mt-4 mx-10 lg:mx-[20%]">
+      <div class="bg-white rounded-lg border shadow p-10 mb-3">
+        <h2 class="text-lg">你好，<span class="font-bold" id="username"></span>。</h2>
+      </div>
+      <div class="bg-white rounded-lg border shadow p-10 mb-3">
+        <h2 class="text-lg mb-2">修改密码</h2>
+        <div>
+          <div class="flex items-center justify-between">
+            <label
+              for="old_password"
+              class="block text-sm font-medium leading-6 text-gray-900"
+              >旧密码</label
+            >
+          </div>
+          <div class="mt-2 mb-2">
+            <input
+              id="old_password"
+              name="old_password"
+              type="password"
+              autocomplete="current-password"
+              required
+              class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+          <div class="flex items-center justify-between">
+            <label
+              for="new_password"
+              class="block text-sm font-medium leading-6 text-gray-900"
+              >新密码</label
+            >
+          </div>
+          <div class="mt-2 mb-2">
+            <input
+              id="new_password"
+              name="new_password"
+              type="password"
+              autocomplete="new-password"
+              required
+              class="block p-2 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+          <div>
+            <button
+              id="changepass-comfirm"
+              class="px-3 py-1.5 rounded text-white bg-indigo-600"
+            >
+              确认
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-lg border shadow p-10 mb-3">
+        <img
+          class="h-10 w-auto"
+          src="/static/img@1.0.0/Current.svg"
+          alt="Current Logo"
+        />
+        <p class="text-sm text-gray-500 mt-5">
+          Current - A intelligent platform for scholar newspaper.
+        </p>
+        <p class="text-sm text-gray-500 mt-1">
+          Made by <a href="https://codezhangborui.com" class="text-indigo-600">CodeZhangBorui</a>, All right reserved.
+        </p>
+      </div>
+    </div>
+    <script>
+      var token = Cookies.get("token");
+      processDataHref();
+      verifyUser();
+      regLogoutButton();
+    </script>
+    <script>
+      var token = Cookies.get("token");
+      document.querySelector('#changepass-comfirm').addEventListener('click', function() {
+        var old_password = document.querySelector('#old_password').value;
+        var new_password = document.querySelector('#new_password').value;
+        axios.post('/api/clients/changepass', {
+          oldpass: old_password,
+          newpass: new_password
+        }, {
+          headers: {
+            'Authorization': token
+          }
+        }).then(function(response) {
+          var data = response.data;
+          if (data.success) {
+            sendToast.success("修改成功！");
+            setTimeout(function() {
+              Cookies.remove("token");
+              window.location.reload();
+            }, 1000);
+          } else {
+            sendToast.error(data.message);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

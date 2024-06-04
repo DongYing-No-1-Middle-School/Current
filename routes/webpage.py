@@ -20,6 +20,11 @@ def login():
     """Login page."""
     return render_template("login.html")
 
+@webpage.route("/settings")
+def settings():
+    """Personal settings page."""
+    return render_template("settings.html")
+
 @webpage.route("/issue/<int:issue_id>")
 def issue(issue_id):
     """Issue page."""

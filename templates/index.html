@@ -1,115 +1,203 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Current</title>
-    <link href="/static/index.css" rel="stylesheet" />
-    <link href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css" rel="stylesheet" />
-    <link href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css" rel="stylesheet" />
+    <link href="/static/current@1.0.0/index.css" rel="stylesheet" />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
+      rel="stylesheet"
+    />
     <script src="/static/axois@1.7.2/axios.min.js"></script>
     <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
     <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+    <script src="/static/current@1.0.0/index.js"></script>
   </head>
-  <body class="bg-gray-[30]">
-    <header class="mx-10">
+  <body class="h-full bg-[#fafafa]">
+    <header class="px-5 pb-2 bg-white border-b-2">
       <div>
-        <nav class="flex justify-between items-center py-4 mx-3 lg:px-[15%]">
-          <div>
-            <a href="/" class="-m-1.5 p-1.5">
+        <nav class="flex flex-row justify-between items-center mx-3 pt-5 pb-2">
+          <div class="flex flex-row h-8">
+            <a href="/" class="">
               <span class="sr-only">Current</span>
-              <img class="h-10 w-auto" src="/static/img@20240530/Current.svg" alt="">
+              <img
+                class="h-6 w-auto"
+                src="/static/img@1.0.0/Current.svg"
+                alt=""
+              />
             </a>
+            <div class="hidden login-show flex flex-row">
+              <i
+                class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
+              ></i>
+              <p>
+                <span id="username" class="font-bold"></span>
+                <a id="logout" href="#" class="rounded p-1 hover:bg-gray-100"
+                  >退出登录</a
+                >
+              </p>
+            </div>
           </div>
-          <div id="login-entry">
-            <a href="/login" class="px-3 py-1.5 rounded text-white bg-indigo-600">登录</a>
+          <div class="login-hidden">
+            <button
+              data-href="/login"
+              class="px-3 py-1.5 rounded text-white bg-indigo-600"
+            >
+              登录
+            </button>
           </div>
-          <div id="userinfo-show" class="hidden">
-            <p><span id="username"></span> <a id="logout" href="#" class="rounded p-1 hover:bg-gray-100">退出登录</a></p>
-          </div>
+        </nav>
+      </div>
+      <div class="hidden login-show">
+        <div class="flex flex-row gap-2">
+          <button data-href="/" class="px-3 py-1.5 rounded bg-gray-200">
+            首页
+          </button>
+          <button
+            data-href="/drafts"
+            class="px-3 py-1.5 rounded hover:bg-gray-100"
+          >
+            草稿
+          </button>
+          <button
+            data-href="/settings"
+            class="px-3 py-1.5 rounded hover:bg-gray-100"
+          >
+            个人设置
+          </button>
+          <button
+            data-href="/management"
+            data-with-permission="management.enter"
+            class="hidden px-3 py-1.5 rounded hover:bg-gray-100"
+          >
+            管理面板
+          </button>
+        </div>
       </div>
     </header>
-    <div class="mx-10 lg:mx-[20%]">
-      <div id="issue-list" class="hidden">
-        <div class="flex flex-col lg:flex-row flex-nowrap rounded-lg border mb-3 p-5 w-full">
-          <div class="mr-3">
-            <i class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"></i>
-          </div>
-          <div class="flex-1 flex-col">
-            <h2>
-              第 7 期
-            </h2>
-            <p>
-              计划出版日期：2024-7-1
-            </p>
-            <p>
-              剩余天数：<label class="rounded p-1 bg-red-400 text-gray-50">5 天</label>
-            </p>
-          </div>
-          <div>
-            <a href="/issue/7" class="p-3 rounded hover:bg-gray-100">查看</a>
-          </div>
-        </div>
-        <div class="flex flex-col lg:flex-row flex-nowrap rounded-lg border mb-3 p-5 w-full">
-          <div class="mr-3">
-            <i class="icon-ic_fluent_checkmark_circle_32_regular text-green-400 text-xl"></i>
-          </div>
-          <div class="flex-1 flex-col">
-            <h2>
-              第 6 期
-            </h2>
-            <p>
-              出版日期：2024-6-1
-            </p>
-          </div>
-          <div>
-            <a href="/issue/" class="p-3 rounded hover:bg-gray-100">查看</a>
-          </div>
+    <div class="mt-4 mx-10 lg:mx-[20%]">
+      <div id="issue-list" class="hidden login-show">
+        <div class="mb-5 gap-5">
+          <button
+            data-href="/issue/new"
+            data-with-permission="issues.create"
+            class="hidden px-3 py-1.5 rounded text-white bg-indigo-600"
+          >
+            <i class="icon-ic_fluent_add_circle_24_regular"></i>
+            创建新期刊
+          </button>
         </div>
       </div>
-      <div id="no-login-box" class="hidden flex justify-center rounded-lg border mb-3 p-5 w-full">
+      <div
+        id="no-login-box"
+        class="login-hidden flex bg-white rounded-lg border shadow justify-center p-10"
+      >
         <p>登录到 Current，开始创作之旅。</p>
       </div>
     </div>
-    <script type="module">
-      var token = Cookies.get('token');
-      if(token != undefined) {
-        axios.get('/api/clients/status', {
-          headers: {
-            Authorization: token
-          }
-        }).then((result) => {
-          var data = result.data;
-          console.log(data);
-          if(data.code == 200) {
-            var username = data.data.username;
-            document.getElementById('username').innerText = username;
-            document.querySelector('#login-entry').classList.add('hidden');
-            document.querySelector('#userinfo-show').classList.remove('hidden');
-            document.querySelector('#issue-list').classList.remove('hidden');
-          } else {
-            token = undefined;
-            Cookies.remove('token');
-            document.querySelector('#no-login-box').classList.remove('hidden');
-            sendToast.warning('登录状态异常，请重新登录。')
-          }
-        });
-      } else {
-        document.querySelector('#no-login-box').classList.remove('hidden');
-      }
+    <script>
+      var token = Cookies.get("token");
+      var requestIssues = () => {
+        axios
+          .get("/api/issues/list", {
+            headers: {
+              Authorization: token,
+            },
+          })
+          .then((result) => {
+            var data = result.data;
+            console.log(data);
+            if (data.code == 200) {
+              var issues = data.data;
+              var issueList = document.getElementById("issue-list");
+              inprogress_template = `
+              <div class="mr-3">
+                <i
+                  class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"
+                ></i>
+              </div>
+              <div class="flex-1 flex-col">
+                <h2>第 {!issue_id!} 期</h2>
+                <p>计划出版日期：{!publish_date!}</p>
+                <p>
+                  剩余天数：<label class="border rounded px-2"
+                    >{!left_days!} 天</label
+                  >
+                </p>
+              </div>
+              <div>
+                <button
+                  data-href="/issue/{!issue_id!}"
+                  class="px-3 py-1.5 rounded hover:bg-gray-100"
+                >
+                  查看
+                </button>
+                <div data-with-permission="issues.publish" class="hidden">
+                  <button
+                    data-href="/issue/{!issue_id!}#publish"
+                    class="px-3 py-1.5 rounded hover:bg-gray-100"
+                  >
+                    发布
+                  </button>
+                </div>
+              </div>`;
+              issues.forEach((issue) => {
+                var issueItem = document.createElement("div");
+                if (issue.ispublished) {
+                  return;
+                } else {
+                  var thisdom = inprogress_template;
+                  thisdom = thisdom.replaceAll("{!issue_id!}", issue.id);
+                  var publish_date = new Date(
+                    issue.date * 1000
+                  ).toLocaleDateString();
+                  thisdom = thisdom.replaceAll(
+                    "{!publish_date!}",
+                    publish_date
+                  );
+                  var left_days = Math.floor(
+                    (new Date(issue.date * 1000) - new Date()) /
+                      1000 /
+                      60 /
+                      60 /
+                      24
+                  );
+                  thisdom = thisdom.replaceAll("{!left_days!}", left_days);
+                  issueItem.innerHTML = thisdom;
+                }
+                issueItem.classList.add(
+                  "flex",
+                  "flex-col",
+                  "lg:flex-row",
+                  "flex-nowrap",
+                  "bg-white",
+                  "rounded-lg",
+                  "border",
+                  "shadow",
+                  "mb-3",
+                  "p-5",
+                  "w-full"
+                );
+                issueList.appendChild(issueItem);
+              });
+              issueList.classList.remove("hidden");
+            }
+            processPermission();
+            processDataHref();
+          });
+      };
+      processDataHref();
     </script>
     <script>
-      var token = Cookies.get('token');
-      document.getElementById('logout').addEventListener('click', (e) => {
-        e.preventDefault();
-        Cookies.remove('token');
-        axios.get('/api/clients/logout', {
-          headers: {
-            Authorization: token
-          }
-        });
-        window.location.reload();
-      });
+      if(verifyUser() != undefined) {
+        requestIssues();
+      }
+      regLogoutButton();
     </script>
   </body>
 </html>
