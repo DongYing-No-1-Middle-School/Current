@@ -52,7 +52,8 @@ def status():
         return {"code": 200, "success": True, "data": {"username": username}}
     else:
         return {"code": 401, "success": False, "message": "Invalid token."}
-    
+
+
 @clients.route("/api/clients/permissions", methods=["GET"])
 def get_permissions():
     """Get permissions"""
@@ -63,7 +64,11 @@ def get_permissions():
     username = sessions.get_user(token)
     if not username:
         return {"code": 401, "success": False, "message": "Invalid token."}
-    return {"code": 200, "success": True, "data": permissions.list_permissions(username)}
+    return {
+        "code": 200,
+        "success": True,
+        "data": permissions.list_permissions(username),
+    }
 
 
 @clients.route("/api/clients/logout", methods=["GET"])
@@ -75,6 +80,7 @@ def logout():
         return {"code": 400, "success": False, "message": "Bad request."}
     sessions.delete(token)
     return {"code": 200, "success": True}
+
 
 @clients.route("/api/clients/changepass", methods=["POST"])
 def changepass():
