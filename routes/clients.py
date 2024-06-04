@@ -20,6 +20,12 @@ def login():
         password = request.json["password"]
     except KeyError:
         return {"code": 400, "success": False, "message": "Bad request."}
+    if not permissions.has_permission(username, "clients.login"):
+        return {
+            "code": 403,
+            "success": False,
+            "message": "Access denied by permission controller: IsGranted(clients.login)",
+        }
     state = users.verify(username, password)
     if state:
         token = sessions.create(username)
@@ -36,6 +42,12 @@ def status():
     except KeyError:
         return {"code": 400, "success": False, "message": "Bad request."}
     username = sessions.get_user(token)
+    if not permissions.has_permission(username, "clients.login"):
+        return {
+            "code": 403,
+            "success": False,
+            "message": "Access denied by permission controller: IsGranted(clients.login)",
+        }
     if username:
         return {"code": 200, "success": True, "data": {"username": username}}
     else:
@@ -69,11 +81,21 @@ def changepass():
     """Change password"""
     try:
         token = request.headers["Authorization"]
+        oldpass = request.json["oldpass"]
         newpass = request.json["newpass"]
     except KeyError:
         return {"code": 400, "success": False, "message": "Bad request."}
     username = sessions.get_user(token)
+    if not permissions.has_permission(username, "clients.changepass"):
+        return {
+            "code": 403,
+            "success": False,
+            "message": "Access denied by permission controller: IsGranted(clients.changepass)",
+        }
     if not username:
         return {"code": 401, "success": False, "message": "Invalid token."}
-    users.update(username, password=newpass)
+    if not users.verify(username, oldpass):
+        return {"code": 401, "success": False, "message": "Wrong old password."}
+    users.update(username, passwd=newpass)
+    sessions.delete(token)
     return {"code": 200, "success": True}

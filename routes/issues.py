@@ -38,7 +38,7 @@ def create():
         }
     if date < int(time.time()):
         return {"code": 400, "success": False, "message": "Invalid date."}
-    conn = sqlite3.connect(oriondb)
+    conn = sqlite3.connect('current.db')
     c = conn.cursor()
     c.execute(
         """insert into issues 
@@ -53,7 +53,7 @@ def create():
 @issues.route("/api/issues/list", methods=["GET"])
 def listall():
     """List issues"""
-    conn = sqlite3.connect(oriondb)
+    conn = sqlite3.connect('current.db')
     c = conn.cursor()
     c.execute("select * from issues")
     allissues = c.fetchall()
@@ -87,7 +87,7 @@ def publish(issue_id):
             "success": False,
             "message": "Access denied by permission controller: IsGranted(issues.publish)",
         }
-    conn = sqlite3.connect(oriondb)
+    conn = sqlite3.connect('current.db')
     c = conn.cursor()
     c.execute("select * from issues where id = ?", (issue_id,))
     issue = c.fetchone()

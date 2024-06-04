@@ -75,10 +75,12 @@ def index():
             grade = int(request.json["grade"])
             classnum = int(request.json["classnum"])
             users.create(username, password, grade=grade, classnum=classnum)
-            permissions.grant(username, "group.default")
-            permissions.grant(username, "*")
+            permissions.grant(username, "clients.login")
+            permissions.grant(username, "clients.changepass")
             permissions.grant("group.default", "entries.create.*")
             permissions.grant("group.default", "entries.review.*")
+            permissions.grant(username, "group.default")
+            permissions.grant(username, "*")
             nowstep = 4
             return {"code": 200, "success": True}
         return {"code": 400, "success": False, "message": "Bad request."}
