@@ -4,7 +4,7 @@ import sqlite3
 import time
 import uuid
 
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request, send_file
 
 import orion
 
@@ -58,7 +58,7 @@ def create():
             description,
             sessions.get_user(token),
             "",
-            "created",
+            "pending",
         ),
     )
     c.close()
@@ -261,6 +261,23 @@ def review(entry_uuid):
             "status": "reviewed",
         },
     }
+
+
+@entries.route("/api/entries/getasset/<entry_uuid>", methods=["GET"])
+def getasset(entry_uuid):
+    """Get the asset of an entry"""
+    conn = sqlite3.connect("current.db")
+    c = conn.cursor()
+    c.execute(
+        "select * from entries where uuid = ?",
+        (entry_uuid,),
+    )
+    entry = c.fetchone()
+    if not entry:
+        conn.close()
+        return {"code": 404, "success": False, "message": "Entry not found."}
+    conn.close()
+    return send_file(f"uploads/{entry_uuid}", as_attachment=True, download_name=entry[2])
 
 
 @entries.route("/api/entries/select/<entry_uuid>", methods=["POST"])

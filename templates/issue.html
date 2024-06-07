@@ -57,21 +57,15 @@
           <div class="flex flex-row justify-between my-3">
             <div class="flex flex-col">
               <p class="text-sm text-gray-500">已投稿</p>
-              <p class="text-2xl">
-                <span id="created-total">0</span> 条
-              </p>
+              <p class="text-2xl"><span id="created-total">0</span> 条</p>
             </div>
             <div class="flex flex-col">
               <p class="text-sm text-gray-500">已审核</p>
-              <p class="text-2xl">
-                <span id="reviewed-total">0</span> 条
-              </p>
+              <p class="text-2xl"><span id="reviewed-total">0</span> 条</p>
             </div>
             <div class="flex flex-col">
               <p class="text-sm text-gray-500">已选录</p>
-              <p class="text-2xl">
-                <span id="selected-total">0</span> 条
-              </p>
+              <p class="text-2xl"><span id="selected-total">0</span> 条</p>
             </div>
           </div>
           <p class="mt-1">第一版</p>
@@ -112,34 +106,25 @@
         创建投稿
       </button>
       <h2 class="text-xl font-bold my-5">第一版</h2>
-      <div id="page-1-container">
-        <div class="bg-white rounded-lg border shadow p-10 mb-3">
-          [Todo]: 这里将展示投稿详情
-        </div>
-      </div>
-      <h2 class="text-xl font-bold my-5">第二版 - <span id="page-2-subject"></span></h2>
-      <div id="page-2-container">
-        <div class="bg-white rounded-lg border shadow p-10 mb-3">
-          [Todo]: 这里将展示投稿详情
-        </div>
-      </div>
-      <h2 class="text-xl font-bold my-5">第三版 - <span id="page-3-subject"></span></h2>
-      <div id="page-3-container">
-        <div class="bg-white rounded-lg border shadow p-10 mb-3">
-          [Todo]: 这里将展示投稿详情
-        </div>
-      </div>
-      <h2 class="text-xl font-bold my-5">第四版 - <span id="page-4-subject"></span></h2>
-      <div id="page-4-container">
-        <div class="bg-white rounded-lg border shadow p-10 mb-3">
-          [Todo]: 这里将展示投稿详情
-        </div>
-      </div>
+      <div id="page-1-container"></div>
+      <h2 class="text-xl font-bold my-5">
+        第二版 - <span id="page-2-subject"></span>
+      </h2>
+      <div id="page-2-container"></div>
+      <h2 class="text-xl font-bold my-5">
+        第三版 - <span id="page-3-subject"></span>
+      </h2>
+      <div id="page-3-container"></div>
+      <h2 class="text-xl font-bold my-5">
+        第四版 - <span id="page-4-subject"></span>
+      </h2>
+      <div id="page-4-container"></div>
     </div>
     <script>
       var token = Cookies.get("token");
       processDataHref();
       verifyUser();
+      processPermission();
       document.querySelectorAll("#issue_id").forEach((e) => {
         e.innerText = window.issue_id;
       });
@@ -155,7 +140,8 @@
         .then((result) => {
           var data = result.data;
           console.log(data);
-          if(data.code == 200) {
+          if (data.code == 200) {
+            // Render statical data
             var statical = data.data.count;
             var created_total = 0;
             var reviewed_total = 0;
@@ -165,13 +151,41 @@
                 `[data-statical-render="${i + 1}"]`
               );
               var pending_dom = document.createElement("span");
-              pending_dom.classList.add("h-5", "w-2", "rounded", "shadow", "bg-gray-300", "mr-1");
+              pending_dom.classList.add(
+                "h-5",
+                "w-2",
+                "rounded",
+                "shadow",
+                "bg-gray-300",
+                "mr-1"
+              );
               var created_dom = document.createElement("span");
-              created_dom.classList.add("h-5", "w-2", "rounded", "shadow", "bg-green-300", "mr-1");
+              created_dom.classList.add(
+                "h-5",
+                "w-2",
+                "rounded",
+                "shadow",
+                "bg-green-300",
+                "mr-1"
+              );
               var reviewed_dom = document.createElement("span");
-              reviewed_dom.classList.add("h-5", "w-2", "rounded", "shadow", "bg-green-400", "mr-1");
+              reviewed_dom.classList.add(
+                "h-5",
+                "w-2",
+                "rounded",
+                "shadow",
+                "bg-green-400",
+                "mr-1"
+              );
               var selected_dom = document.createElement("span");
-              selected_dom.classList.add("h-5", "w-2", "rounded", "shadow", "bg-blue-600", "mr-1");
+              selected_dom.classList.add(
+                "h-5",
+                "w-2",
+                "rounded",
+                "shadow",
+                "bg-blue-600",
+                "mr-1"
+              );
               for (let j = 0; j < statical[i].selected; j++) {
                 dom.appendChild(selected_dom.cloneNode());
               }
@@ -189,8 +203,75 @@
               selected_total += statical[i].selected;
             }
             document.querySelector("#created-total").innerText = created_total;
-            document.querySelector("#reviewed-total").innerText = reviewed_total;
-            document.querySelector("#selected-total").innerText = selected_total;
+            document.querySelector("#reviewed-total").innerText =
+              reviewed_total;
+            document.querySelector("#selected-total").innerText =
+              selected_total;
+            // Render entries
+            var entries = data.data.list;
+            var icon_type = {
+              created: "icon-ic_fluent_circle_32_regular text-blue-400",
+              reviewed:
+                "icon-ic_fluent_checkmark_circle_32_regular text-green-400",
+              selected:
+                "icon-ic_fluent_checkmark_circle_32_regular text-blue-600",
+            };
+            var page_dom = [
+              document.querySelector("#page-1-container"),
+              document.querySelector("#page-2-container"),
+              document.querySelector("#page-3-container"),
+              document.querySelector("#page-4-container"),
+            ];
+            entries.forEach((entry) => {
+              var entry_template = `
+              <div class="mr-3">
+                <i
+                  class="${icon_type[entry.status]} text-xl"
+                ></i>
+              </div>
+              <div class="flex-1 flex-col">
+                <h2 class="font-bold text-lg">${entry.title}</h2>
+                <p><span class="font-bold">来源：</span>${entry.origin}</p>
+                <p><span class="font-bold">词数：</span>${entry.wordcount}</p>
+                <p><span class="font-bold">描述：</span></p>
+                <p>${entry.description}</p>
+                <p><span class="font-bold">选稿人：</span>${entry.selector}</p>
+                <p><span class="font-bold">审稿人：</span>${entry.reviewer}</p>
+              </div>
+              <div data-with-permission="entries.review.${window.issue_id}" class="hidden">
+                <button
+                  data-href="/api/entries/getasset/${entry.uuid}"
+                  class="px-3 py-1.5 rounded hover:bg-gray-100"
+                >
+                  下载
+                </button>
+                <button
+                  data-review-uuid="${entry.uuid}"
+                  class="px-3 py-1.5 rounded hover:bg-gray-100"
+                >
+                  审稿
+                </button>
+              </div>
+              `;
+              var entryItem = document.createElement("div");
+              entryItem.innerHTML = entry_template;
+              entryItem.classList.add(
+                "flex",
+                "flex-col",
+                "lg:flex-row",
+                "flex-nowrap",
+                "bg-white",
+                "rounded-lg",
+                "border",
+                "shadow",
+                "mb-3",
+                "p-5",
+                "w-full"
+              );
+              page_dom[entry.page - 1].appendChild(entryItem);
+            });
+            processDataHref();
+            processPermission();
           } else {
             sendToast.error(data.message);
           }
@@ -203,16 +284,19 @@
           headers: {
             Authorization: token,
           },
-        }).then((result) => {
+        })
+        .then((result) => {
           var data = result.data;
           console.log(data);
-          if(data.code == 200) {
+          if (data.code == 200) {
             var leader = data.data.leader;
             var editors = data.data.editors;
             var respeditor = data.data.respeditor;
             var leader_dom = document.querySelector("#leader-container");
             var editors_dom = document.querySelector("#editors-container");
-            var respeditor_dom = document.querySelector("#respeditor-container");
+            var respeditor_dom = document.querySelector(
+              "#respeditor-container"
+            );
             var li = document.createElement("li");
             li.classList.add("flex", "items-center", "mr-2");
             li.innerText = leader;
@@ -227,9 +311,12 @@
             li.classList.add("flex", "items-center", "mr-2");
             li.innerText = respeditor;
             respeditor_dom.appendChild(li);
-            document.querySelector("#page-2-subject").innerText = data.data.subject[0];
-            document.querySelector("#page-3-subject").innerText = data.data.subject[1];
-            document.querySelector("#page-4-subject").innerText = data.data.subject[2];
+            document.querySelector("#page-2-subject").innerText =
+              data.data.subject[0];
+            document.querySelector("#page-3-subject").innerText =
+              data.data.subject[1];
+            document.querySelector("#page-4-subject").innerText =
+              data.data.subject[2];
           } else {
             sendToast.error(data.message);
           }

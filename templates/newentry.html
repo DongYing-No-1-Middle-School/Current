@@ -155,7 +155,9 @@
                 class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
               >
                 <div class="text-center">
-                  <div class="mt-4 flex flex-col text-sm leading-6 text-gray-600">
+                  <div
+                    class="mt-4 flex flex-col text-sm leading-6 text-gray-600"
+                  >
                     <p id="filename-show"></p>
                     <label
                       for="file-upload"
@@ -209,28 +211,39 @@
         .addEventListener("submit", function (event) {
           event.preventDefault();
           document.querySelector("button[type='submit']").disabled = true;
-          sendToast.info("正在上传……");
           var token = Cookies.get("token");
           var form = document.querySelector("form");
           var formData = new FormData(form);
-
+          var payload = {
+            issue_id: window.issue_id,
+            page: formData.get("page"),
+            title: formData.get("title"),
+            origin: formData.get("origin"),
+            wordcount: formData.get("wordcount"),
+            description: formData.get("description"),
+          };
+          if (
+            payload.page.trim() === "" ||
+            payload.title.trim() === "" ||
+            payload.origin.trim() === "" ||
+            payload.wordcount.trim() === ""
+          ) {
+            sendToast.error("请填写所有必填字段");
+            document.querySelector("button[type='submit']").disabled = false;
+            return;
+          }
+          if(document.getElementById("file-upload").files.length === 0) {
+            sendToast.error("请上传文件");
+            document.querySelector("button[type='submit']").disabled = false;
+            return;
+          }
+          sendToast.info("正在上传……");
           axios
-            .post(
-              "/api/entries/create",
-              {
-                issue_id: window.issue_id,
-                page: formData.get("page"),
-                title: formData.get("title"),
-                origin: formData.get("origin"),
-                wordcount: formData.get("wordcount"),
-                description: formData.get("description"),
+            .post("/api/entries/create", payload, {
+              headers: {
+                Authorization: token,
               },
-              {
-                headers: {
-                  Authorization: token,
-                },
-              }
-            )
+            })
             .then((result) => {
               var data = result.data;
               if (data.code === 200) {
@@ -256,12 +269,16 @@
                       }, 1000);
                     } else {
                       sendToast.error(data.message);
-                      document.querySelector("button[type='submit']").disabled = false;
+                      document.querySelector(
+                        "button[type='submit']"
+                      ).disabled = false;
                     }
                   });
               } else {
                 sendToast.error(data.message);
-                document.querySelector("button[type='submit']").disabled = false;
+                document.querySelector(
+                  "button[type='submit']"
+                ).disabled = false;
               }
             });
         });
