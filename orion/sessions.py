@@ -70,7 +70,7 @@ class Sessions:
             return user[0]
         return None
 
-    def delete_user_sessions(self, user) -> None:
+    def purge_user(self, user) -> None:
         """Delete all sessions of a user.
 
         Args:

@@ -111,5 +111,5 @@ def changepass():
     if not users.verify(username, oldpass):
         return {"code": 401, "success": False, "message": "Wrong old password."}
     users.update(username, passwd=newpass)
-    sessions.delete(token)
+    sessions.purge_user(username)
     return {"code": 200, "success": True}
