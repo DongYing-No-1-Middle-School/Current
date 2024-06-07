@@ -49,9 +49,17 @@ def status():
             "message": "Access denied by permission controller: IsGranted(clients.login)",
         }
     if username:
-        return {"code": 200, "success": True, "data": {"username": username}}
-    else:
-        return {"code": 401, "success": False, "message": "Invalid token."}
+        userdetail = users.get_by_name(username)
+        return {
+            "code": 200,
+            "success": True,
+            "data": {
+                "username": username,
+                "grade": userdetail["grade"],
+                "classnum": userdetail["classnum"],
+            },
+        }
+    return {"code": 401, "success": False, "message": "Invalid token."}
 
 
 @clients.route("/api/clients/permissions", methods=["GET"])
