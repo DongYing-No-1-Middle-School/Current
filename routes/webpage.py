@@ -29,3 +29,8 @@ def settings():
 def issue(issue_id):
     """Issue page."""
     return render_template("issue.html", issue_id=issue_id)
+
+@webpage.route("/issue/<int:issue_id>/create")
+def new_entry(issue_id):
+    """New entry page."""
+    return render_template("newentry.html", issue_id=issue_id)

@@ -46,7 +46,7 @@ def create():
     c = conn.cursor()
     c.execute(
         """insert into entries (uuid, issue_id, filename, page, title, origin, wordcount, description, selector, reviewer, status)
-        values (?, ?, ?, ?, ?, ?, ?);""",
+        values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""",
         (
             entry_uuid,
             issue_id,
@@ -160,26 +160,26 @@ def listissue(issue_id):
     entries_cnt = [
         {
             "pending": 0,
-            "created": 2,
-            "reviewed": 3,
-            "selected": 1,
+            "created": 0,
+            "reviewed": 0,
+            "selected": 0,
         },
         {
             "pending": 0,
-            "created": 5,
-            "reviewed": 3,
-            "selected": 2,
+            "created": 0,
+            "reviewed": 0,
+            "selected": 0,
         },
         {
             "pending": 0,
-            "created": 7,
-            "reviewed": 5,
-            "selected": 3,
+            "created": 0,
+            "reviewed": 0,
+            "selected": 0,
         },
         {
             "pending": 0,
-            "created": 8,
-            "reviewed": 2,
+            "created": 0,
+            "reviewed": 0,
             "selected": 0,
         }
     ]
@@ -199,7 +199,7 @@ def listissue(issue_id):
                 "status": entry[10],
             }
         )
-        entries_cnt[entry[3]][entry[10]] += 1
+        entries_cnt[entry[3] - 1][entry[10]] += 1
     return {
         "code": 200,
         "success": True,

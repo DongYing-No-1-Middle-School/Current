@@ -38,25 +38,14 @@
               <i
                 class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
               ></i>
-              <p>
+              <p data-href="/">
                 <span id="username" class="font-bold"></span>
-                <a id="logout" href="#" class="rounded p-1 hover:bg-gray-100"
-                  >退出登录</a
-                >
               </p>
               <i
                 class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
               ></i>
               <p>第 <span id="issue_id" class="font-bold"></span> 期</p>
             </div>
-          </div>
-          <div class="login-hidden">
-            <button
-              data-href="/login"
-              class="px-3 py-1.5 rounded text-white bg-indigo-600"
-            >
-              登录
-            </button>
           </div>
         </nav>
       </div>
@@ -151,7 +140,6 @@
       var token = Cookies.get("token");
       processDataHref();
       verifyUser();
-      regLogoutButton();
       document.querySelectorAll("#issue_id").forEach((e) => {
         e.innerText = window.issue_id;
       });
