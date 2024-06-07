@@ -136,7 +136,7 @@ def upload(entry_uuid):
     }
 
 
-@entries.route('/api/entries/listissue/<issue_id>')
+@entries.route("/api/entries/listissue/<issue_id>")
 def listissue(issue_id):
     """List entries of an issue"""
     try:
@@ -181,7 +181,7 @@ def listissue(issue_id):
             "created": 0,
             "reviewed": 0,
             "selected": 0,
-        }
+        },
     ]
     for entry in allentries:
         res.append(
@@ -277,7 +277,9 @@ def getasset(entry_uuid):
         conn.close()
         return {"code": 404, "success": False, "message": "Entry not found."}
     conn.close()
-    return send_file(f"uploads/{entry_uuid}", as_attachment=True, download_name=entry[2])
+    return send_file(
+        f"uploads/{entry_uuid}", as_attachment=True, download_name=entry[2]
+    )
 
 
 @entries.route("/api/entries/select/<entry_uuid>", methods=["POST"])

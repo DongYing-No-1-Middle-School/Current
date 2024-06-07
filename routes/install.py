@@ -6,9 +6,10 @@ import orion
 
 install = Blueprint("install", __name__, template_folder="templates")
 
-oriondb = 'orion.db'
+oriondb = "orion.db"
 nowstep = 0
 users = session = permissions = None
+
 
 @install.route("/", methods=["GET", "POST"])
 def index():
@@ -23,9 +24,7 @@ def index():
                 "flask": {
                     "debug": False,
                 },
-                "oriondb": {
-                    "path": 'orion.db'
-                }
+                "oriondb": {"path": "orion.db"},
             }
             with open("config.json", "w") as f:
                 f.write(json.dumps(config_template, indent=4))
@@ -33,12 +32,13 @@ def index():
             return {"code": 200, "success": True}
         if step == 2:
             global users, session, permissions
-            users = orion.Users(oriondb, ['grade', 'classnum'])
+            users = orion.Users(oriondb, ["grade", "classnum"])
             session = orion.Sessions(oriondb)
             permissions = orion.Permissions(oriondb)
-            conn = sqlite3.connect('current.db')
+            conn = sqlite3.connect("current.db")
             c = conn.cursor()
-            c.execute("""create table issues
+            c.execute(
+                """create table issues
             (
                 id          integer
                     constraint issues_pk
@@ -51,8 +51,10 @@ def index():
                 editors     text,
                 respeditor  text,
                 ispublished integer
-            );""")
-            c.execute("""create table entries
+            );"""
+            )
+            c.execute(
+                """create table entries
             (
                 uuid        text
                     constraint entries_pk
@@ -67,7 +69,8 @@ def index():
                 selector    text,
                 reviewer    text,
                 status      text
-            );""")
+            );"""
+            )
             nowstep = 3
             return {"code": 200, "success": True}
         if step == 3:

@@ -29,7 +29,7 @@ class Permissions:
 
         Returns:
             bool: True if permission is valid."""
-        pattern = r'^[a-zA-Z0-9*.]+$'
+        pattern = r"^[a-zA-Z0-9*.]+$"
         return bool(re.match(pattern, permission))
 
     def grant(self, target, node) -> None:
@@ -68,9 +68,9 @@ class Permissions:
         Returns:
             bool: True if target has permission."""
         nodechain = node.split(".")
-        nodelist = ['*', node]
+        nodelist = ["*", node]
         for i in range(len(nodechain) - 1):
-            nodelist.append(".".join(nodechain[:-i - 1] + ["*"]))
+            nodelist.append(".".join(nodechain[: -i - 1] + ["*"]))
         conn = sqlite3.connect(self.oriondb)
         c = conn.cursor()
         c.execute("SELECT * FROM permissions WHERE target=?", (target,))
@@ -79,7 +79,7 @@ class Permissions:
         for p in permission:
             if p[1] in nodelist:
                 return True
-            if str(p[1]).startswith('group.'):
+            if str(p[1]).startswith("group."):
                 if self.has_permission(p[1], node):
                     return True
         return False
@@ -99,7 +99,7 @@ class Permissions:
         conn.close()
         res = []
         for p in permission:
-            if str(p[1]).startswith('group.'):
+            if str(p[1]).startswith("group."):
                 res.extend(self.list_permissions(p[1]))
             else:
                 res.append(p[1])
