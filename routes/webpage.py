@@ -1,6 +1,6 @@
 """Route of web pages."""
 
-from flask import Blueprint, current_app, render_template
+from flask import Blueprint, current_app, render_template, send_file
 
 import orion
 
@@ -16,6 +16,11 @@ permissions = orion.Permissions(oriondb)
 def index():
     """Index page."""
     return render_template("index.html")
+
+
+@webpage.route("/favicon.ico")
+def favicon():
+    return send_file("static/img@1.0.0/current.ico")
 
 
 @webpage.route("/login")
