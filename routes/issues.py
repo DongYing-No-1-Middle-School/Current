@@ -73,6 +73,33 @@ def listall():
         )
     return {"code": 200, "success": True, "data": res}
 
+@issues.route("/api/issues/info/<issue_id>", methods=["GET"])
+def info(issue_id):
+    try:
+        token = request.headers["Authorization"]
+    except KeyError:
+        return {"code": 400, "success": False, "message": "Bad request."}
+    conn = sqlite3.connect('current.db')
+    c = conn.cursor()
+    c.execute("select * from issues where id = ?", (issue_id,))
+    issue = c.fetchone()
+    conn.close()
+    if not issue:
+        return {"code": 404, "success": False, "message": "Issue not found."}
+    return {
+        "code": 200,
+        "success": True,
+        "data": {
+            "id": issue[0],
+            "date": issue[1],
+            "subject": [issue[2], issue[3], issue[4]],
+            "leader": issue[5],
+            "editors": issue[6].split(","),
+            "respeditor": issue[7],
+            "ispublished": issue[8],
+        },
+    }
+
 @issues.route("/api/issues/publish/<issue_id>", methods=["POST"])
 def publish(issue_id):
     """Publish an issue with pdf upload"""

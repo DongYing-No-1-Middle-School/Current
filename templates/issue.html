@@ -1,160 +1,251 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Current | 第 {{ issue_id }} 期</title>
     <link href="/static/current@1.0.0/index.css" rel="stylesheet" />
-    <link href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css" rel="stylesheet" />
-    <link href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css" rel="stylesheet" />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
+      rel="stylesheet"
+    />
     <script src="/static/axois@1.7.2/axios.min.js"></script>
     <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
     <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+    <script src="/static/current@1.0.0/index.js"></script>
     <script>
       window.issue_id = {{ issue_id }};
     </script>
   </head>
-  <body class="bg-gray-[30]">
-    <header class="mx-10">
+  <body class="h-full bg-[#fafafa]">
+    <header class="px-5 pb-2 bg-white border-b-2">
       <div>
-        <nav class="flex justify-between items-center py-4 mx-3 lg:px-[15%]">
-          <div>
-            <a href="/" class="-m-1.5 p-1.5">
+        <nav class="flex flex-row justify-between items-center mx-3 pt-5 pb-2">
+          <div class="flex flex-row h-8">
+            <a href="/" class="">
               <span class="sr-only">Current</span>
-              <img class="h-10 w-auto" src="/static/img@1.0.0/Current.svg" alt="">
+              <img
+                class="h-6 w-auto"
+                src="/static/img@1.0.0/Current.svg"
+                alt=""
+              />
             </a>
+            <div class="hidden login-show flex flex-row">
+              <i
+                class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
+              ></i>
+              <p>
+                <span id="username" class="font-bold"></span>
+                <a id="logout" href="#" class="rounded p-1 hover:bg-gray-100"
+                  >退出登录</a
+                >
+              </p>
+              <i
+                class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
+              ></i>
+              <p>第 <span id="issue_id" class="font-bold"></span> 期</p>
+            </div>
           </div>
-          <div id="login-entry">
-            <a href="/login" class="px-3 py-1.5 rounded text-white bg-indigo-600">登录</a>
+          <div class="login-hidden">
+            <button
+              data-href="/login"
+              class="px-3 py-1.5 rounded text-white bg-indigo-600"
+            >
+              登录
+            </button>
           </div>
-          <div id="userinfo-show" class="hidden">
-            <p><span id="username"></span> <a id="logout" href="#" class="rounded p-1 hover:bg-gray-100">退出登录</a></p>
-          </div>
+        </nav>
       </div>
     </header>
-    <div class="mx-10 lg:mx-[20%]">
-      <div class="flex flex-row flex-nowrap rounded-lg border mb-3 p-5 w-full">
-        <div class="mr-3">
-          <i class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"></i>
-        </div>
-        <div class="flex-1 flex-col">
-          <h2>
-            第 7 期
-          </h2>
-          <p>
-            计划出版日期：2024-7-1
-          </p>
-          <p>
-            剩余天数：<label class="rounded p-1 bg-red-400 text-gray-50">5 天</label>
-          </p>
-        </div>
-      </div>
-      <div class="flex flex-col flex-nowrap rounded-lg border mb-3 p-5 w-full">
-        <h2 class="text-lg font-bold mb-4">协作者信息</h2>
-        <table class="border-collapse table-auto">
-          <thead>
-            <tr>
-              <th class="border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-left">主编</th>
-              <th class="border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-left">副主编</th>
-              <th class="border-b dark:border-slate-600 font-medium p-4 pl-8 pt-0 pb-3 text-left">责任编辑</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8">张三</td>
-              <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8">王四</td>
-              <td class="border-b border-slate-100 dark:border-slate-700 p-4 pl-8">李五</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <h2 class="text-lg font-bold mt-8 mb-4">第一版</h2>
-      <div class="flex flex-col lg:flex-row flex-nowrap rounded-lg border mb-3 p-5 w-full">
-        <div class="mr-3">
-          <i class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"></i>
-        </div>
-        <div class="flex-1 flex-col">
-          <h2 class="text-lg mb-4">Originally located on views<span class="mx-3 p-1 rounded text-sm bg-gray-100">docx</a></h2>
-          <p>选稿：2024-5-15 @张三</p>
-          <p>审稿：暂无信息</p>
-          <p>收录：暂无信息</p>
-        </div>
+    <div class="mt-4 mx-10 lg:mx-[20%]">
+      <div class="bg-white rounded-lg border shadow p-10 mb-3">
+        <h2 class="text-xl font-bold mb-2">Dashboard</h2>
         <div class="flex flex-col">
-          <a href="/issue/view/c847few" class="p-3 rounded hover:bg-gray-100">在线查看</a>
-          <a href="/issue/download/c847few" class="p-3 rounded hover:bg-gray-100">下载</a>
+          <div class="flex flex-row justify-between my-3">
+            <div class="flex flex-col">
+              <p class="text-sm text-gray-500">已投稿</p>
+              <p class="text-2xl">
+                <span id="created-total">0</span> 条
+              </p>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-sm text-gray-500">已审核</p>
+              <p class="text-2xl">
+                <span id="reviewed-total">0</span> 条
+              </p>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-sm text-gray-500">已选录</p>
+              <p class="text-2xl">
+                <span id="selected-total">0</span> 条
+              </p>
+            </div>
+          </div>
+          <p class="mt-1">第一版</p>
+          <div data-statical-render="1" class="flex flex-row mt-1 h-6"></div>
+          <p class="mt-1">第二版</p>
+          <div data-statical-render="2" class="flex flex-row mt-1 h-6"></div>
+          <p class="mt-1">第三版</p>
+          <div data-statical-render="3" class="flex flex-row mt-1 h-6"></div>
+          <p class="mt-1">第四版</p>
+          <div data-statical-render="4" class="flex flex-row mt-1 h-6"></div>
         </div>
       </div>
-      <h2 class="text-lg font-bold mt-8 mb-4">第二版</h2>
-      <div class="flex flex-col lg:flex-row flex-nowrap rounded-lg border mb-3 p-5 w-full">
-        <div class="mr-3">
-          <i class="icon-ic_fluent_checkmark_circle_32_regular text-green-400 text-xl"></i>
-        </div>
-        <div class="flex-1 flex-col">
-          <h2 class="text-lg mb-4">New innovation inspires people to create new things<span class="mx-3 p-1 rounded text-sm bg-gray-100">docx</a></h2>
-          <p>选稿：2024-5-15 @张三</p>
-          <p>审稿：2024-5-17 @李四</p>
-          <p>收录：暂无信息</p>
-        </div>
+      <div class="bg-white rounded-lg border shadow p-10 mb-3">
+        <h2 class="text-xl font-bold mb-2">协作者信息</h2>
         <div class="flex flex-col">
-          <a href="/issue/view/fc8es1f" class="p-3 rounded hover:bg-gray-100">在线查看</a>
-          <a href="/issue/download/fc8es1f" class="p-3 rounded hover:bg-gray-100">下载</a>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-white rounded-lg border shadow p-4">
+              <h3 class="text-lg font-semibold">主编</h3>
+              <ul id="leader-container" class="mt-2"></ul>
+            </div>
+            <div class="bg-white rounded-lg border shadow p-4">
+              <h3 class="text-lg font-semibold">副主编</h3>
+              <ul id="editors-container" class="mt-2"></ul>
+            </div>
+            <div class="bg-white rounded-lg border shadow p-4">
+              <h3 class="text-lg font-semibold">责任编辑</h3>
+              <ul id="respeditor-container" class="mt-2"></ul>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="flex flex-col lg:flex-row flex-nowrap rounded-lg border mb-3 p-5 w-full">
-        <div class="mr-3">
-          <i class="icon-ic_fluent_branch_request_20_regular text-purple-400 text-xl"></i>
+      <button
+        data-href="/issue/{{ issue_id }}/create"
+        data-with-permission="entries.create"
+        class="hidden px-3 py-1.5 rounded text-white bg-indigo-600"
+      >
+        <i class="icon-ic_fluent_add_circle_24_regular"></i>
+        创建投稿
+      </button>
+      <h2 class="text-xl font-bold my-5">第一版</h2>
+      <div id="page-1-container">
+        <div class="bg-white rounded-lg border shadow p-10 mb-3">
+          [Todo]: 这里将展示投稿详情
         </div>
-        <div class="flex-1 flex-col">
-          <h2 class="text-lg mb-4">Creatures and plants<span class="mx-3 p-1 rounded text-sm bg-gray-100">pdf</a></h2>
-          <p>选稿：2024-5-15 @张三</p>
-          <p>审稿：2024-5-17 @李四</p>
-          <p>收录：第 7 期 - 第二版</p>
+      </div>
+      <h2 class="text-xl font-bold my-5">第二版 - <span id="page-2-subject"></span></h2>
+      <div id="page-2-container">
+        <div class="bg-white rounded-lg border shadow p-10 mb-3">
+          [Todo]: 这里将展示投稿详情
         </div>
-        <div class="flex flex-col">
-          <a href="/issue/view/fc8es1f" class="p-3 rounded hover:bg-gray-100">在线查看</a>
-          <a href="/issue/download/fc8es1f" class="p-3 rounded hover:bg-gray-100">下载</a>
+      </div>
+      <h2 class="text-xl font-bold my-5">第三版 - <span id="page-3-subject"></span></h2>
+      <div id="page-3-container">
+        <div class="bg-white rounded-lg border shadow p-10 mb-3">
+          [Todo]: 这里将展示投稿详情
+        </div>
+      </div>
+      <h2 class="text-xl font-bold my-5">第四版 - <span id="page-4-subject"></span></h2>
+      <div id="page-4-container">
+        <div class="bg-white rounded-lg border shadow p-10 mb-3">
+          [Todo]: 这里将展示投稿详情
         </div>
       </div>
     </div>
-    <script type="module">
-      var token = Cookies.get('token');
-      if(token != undefined) {
-        axios.get('/api/clients/status', {
+    <script>
+      var token = Cookies.get("token");
+      processDataHref();
+      verifyUser();
+      regLogoutButton();
+      document.querySelectorAll("#issue_id").forEach((e) => {
+        e.innerText = window.issue_id;
+      });
+    </script>
+    <script>
+      var token = Cookies.get("token");
+      axios
+        .get(`/api/entries/listissue/${window.issue_id}`, {
           headers: {
-            Authorization: token
+            Authorization: token,
+          },
+        })
+        .then((result) => {
+          var data = result.data;
+          console.log(data);
+          if(data.code == 200) {
+            var statical = data.data.count;
+            var created_total = 0;
+            var reviewed_total = 0;
+            var selected_total = 0;
+            for (let i = 0; i < statical.length; i++) {
+              var dom = document.querySelector(
+                `[data-statical-render="${i + 1}"]`
+              );
+              var pending_dom = document.createElement("span");
+              pending_dom.classList.add("h-5", "w-2", "rounded", "shadow", "bg-gray-300", "mr-1");
+              var created_dom = document.createElement("span");
+              created_dom.classList.add("h-5", "w-2", "rounded", "shadow", "bg-green-300", "mr-1");
+              var reviewed_dom = document.createElement("span");
+              reviewed_dom.classList.add("h-5", "w-2", "rounded", "shadow", "bg-green-400", "mr-1");
+              var selected_dom = document.createElement("span");
+              selected_dom.classList.add("h-5", "w-2", "rounded", "shadow", "bg-blue-600", "mr-1");
+              for (let j = 0; j < statical[i].selected; j++) {
+                dom.appendChild(selected_dom.cloneNode());
+              }
+              for (let j = 0; j < statical[i].reviewed; j++) {
+                dom.appendChild(reviewed_dom.cloneNode());
+              }
+              for (let j = 0; j < statical[i].created; j++) {
+                dom.appendChild(created_dom.cloneNode());
+              }
+              for (let j = 0; j < statical[i].pending; j++) {
+                dom.appendChild(pending_dom.cloneNode());
+              }
+              created_total += statical[i].created;
+              reviewed_total += statical[i].reviewed;
+              selected_total += statical[i].selected;
+            }
+            document.querySelector("#created-total").innerText = created_total;
+            document.querySelector("#reviewed-total").innerText = reviewed_total;
+            document.querySelector("#selected-total").innerText = selected_total;
+          } else {
+            sendToast.error(data.message);
           }
+        });
+    </script>
+    <script>
+      var token = Cookies.get("token");
+      axios
+        .get(`/api/issues/info/${window.issue_id}`, {
+          headers: {
+            Authorization: token,
+          },
         }).then((result) => {
           var data = result.data;
           console.log(data);
           if(data.code == 200) {
-            var username = data.data.username;
-            document.getElementById('username').innerText = username;
-            document.querySelector('#login-entry').classList.add('hidden');
-            document.querySelector('#userinfo-show').classList.remove('hidden');
-            document.querySelector('#issue-list').classList.remove('hidden');
+            var leader = data.data.leader;
+            var editors = data.data.editors;
+            var respeditor = data.data.respeditor;
+            var leader_dom = document.querySelector("#leader-container");
+            var editors_dom = document.querySelector("#editors-container");
+            var respeditor_dom = document.querySelector("#respeditor-container");
+            var li = document.createElement("li");
+            li.classList.add("flex", "items-center", "mr-2");
+            li.innerText = leader;
+            leader_dom.appendChild(li);
+            editors.forEach((e) => {
+              var li = document.createElement("li");
+              li.classList.add("flex", "items-center", "mr-2");
+              li.innerText = e;
+              editors_dom.appendChild(li);
+            });
+            var li = document.createElement("li");
+            li.classList.add("flex", "items-center", "mr-2");
+            li.innerText = respeditor;
+            respeditor_dom.appendChild(li);
+            document.querySelector("#page-2-subject").innerText = data.data.subject[0];
+            document.querySelector("#page-3-subject").innerText = data.data.subject[1];
+            document.querySelector("#page-4-subject").innerText = data.data.subject[2];
           } else {
-            token = undefined;
-            Cookies.remove('token');
-            document.querySelector('#no-login-box').classList.remove('hidden');
-            sendToast.warning('登录状态异常，请重新登录。')
+            sendToast.error(data.message);
           }
         });
-      } else {
-        document.querySelector('#no-login-box').classList.remove('hidden');
-      }
-    </script>
-    <script>
-      var token = Cookies.get('token');
-      document.getElementById('logout').addEventListener('click', (e) => {
-        e.preventDefault();
-        Cookies.remove('token');
-        axios.get('/api/clients/logout', {
-          headers: {
-            Authorization: token
-          }
-        });
-        window.location.reload();
-      });
     </script>
   </body>
 </html>

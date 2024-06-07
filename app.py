@@ -41,6 +41,8 @@ from routes.clients import clients
 app.register_blueprint(clients)
 from routes.issues import issues
 app.register_blueprint(issues)
+from routes.entries import entries
+app.register_blueprint(entries)
 
 # Register scheduler
 import crontask
