@@ -58,6 +58,7 @@ def index():
                     constraint entries_pk
                         primary key,
                 issue_id    integer,
+                filename    text,
                 page        integer,
                 title       text,
                 origin      text,
@@ -65,7 +66,7 @@ def index():
                 description text,
                 selector    text,
                 reviewer    text,
-                isselected  integer
+                status      text
             );""")
             nowstep = 3
             return {"code": 200, "success": True}
@@ -75,9 +76,10 @@ def index():
             grade = int(request.json["grade"])
             classnum = int(request.json["classnum"])
             users.create(username, password, grade=grade, classnum=classnum)
-            permissions.grant(username, "clients.login")
-            permissions.grant(username, "clients.changepass")
+            permissions.grant("group.default", "clients.login")
+            permissions.grant("group.default", "clients.changepass")
             permissions.grant("group.default", "entries.create.*")
+            permissions.grant("group.default", "entries.list.*")
             permissions.grant("group.default", "entries.review.*")
             permissions.grant(username, "group.default")
             permissions.grant(username, "*")
