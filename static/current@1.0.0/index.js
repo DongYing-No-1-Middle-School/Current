@@ -20,9 +20,13 @@ var processPermission = () => {
           document
             .querySelectorAll("[data-with-permission]")
             .forEach((item) => {
-              var permission = item.getAttribute("data-with-permission");
-              if (permissions.includes(permission)) {
-                item.classList.remove("hidden");
+              var permList = item.getAttribute("data-with-permission").split(".");
+              // process a.b.c.d to a.*, a.b.*, a.b.c.*, a.b.c.d.*
+              for (var i = 1; i < permList.length; i++) {
+                var perm = permList.slice(0, i).join(".") + ".*";
+                if (permissions.includes(perm)) {
+                  item.classList.remove("hidden");
+                }
               }
             });
         }
@@ -41,7 +45,7 @@ var processDataHref = () => {
   });
 };
 
-var verifyUser = () => {
+var verifyUser = (onsuccess = ( userdetail ) => {}) => {
   var token = Cookies.get("token");
   if (token != undefined) {
     axios
@@ -65,7 +69,7 @@ var verifyUser = () => {
             item.classList.remove("hidden");
           });
           processPermission();
-          return username;
+          onsuccess(data.data);
         } else {
           token = undefined;
           Cookies.remove("token");
@@ -73,7 +77,6 @@ var verifyUser = () => {
           if (window.location.pathname != "/") {
             window.location.href = "/";
           }
-          return undefined;
         }
       });
   } else {

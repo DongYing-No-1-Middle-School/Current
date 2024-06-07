@@ -83,6 +83,7 @@
     <div class="mt-4 mx-10 lg:mx-[20%]">
       <div class="bg-white rounded-lg border shadow p-10 mb-3">
         <h2 class="text-lg">你好，<span class="font-bold" id="username"></span>。</h2>
+        <p>班级：<span id="class-display"></span> | 年级：<span id="grade-display"></span></p>
       </div>
       <div class="bg-white rounded-lg border shadow p-10 mb-3">
         <h2 class="text-lg mb-2">修改密码</h2>
@@ -148,7 +149,10 @@
     <script>
       var token = Cookies.get("token");
       processDataHref();
-      verifyUser();
+      verifyUser(onsuccess = (userdetail) => {
+        document.querySelector('#class-display').innerText = userdetail.classnum;
+        document.querySelector('#grade-display').innerText = userdetail.grade;
+      });
       regLogoutButton();
     </script>
     <script>

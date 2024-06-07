@@ -194,9 +194,10 @@
       processDataHref();
     </script>
     <script>
-      if(verifyUser() != undefined) {
+      verifyUser(onsuccess = (userdetail) => {
+        console.log("Logged in");
         requestIssues();
-      }
+      })
       regLogoutButton();
     </script>
   </body>
