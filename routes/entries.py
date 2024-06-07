@@ -239,8 +239,8 @@ def review(entry_uuid):
         }
     file.save(f"uploads/{entry_uuid}")
     c.execute(
-        "update entries set filename = ?, status = 'reviewed' where uuid = ?",
-        (file.filename, entry_uuid),
+        "update entries set filename = ?, status = 'reviewed', reviewer = ? where uuid = ?",
+        (file.filename, sessions.get_user(token), entry_uuid),
     )
     conn.commit()
     conn.close()
@@ -306,10 +306,21 @@ def select(entry_uuid):
             "success": False,
             "message": f"Access denied by permission controller: IsGranted(entries.select.{issue_id})",
         }
-    c.execute(
-        "update entries set status = 'selected' where uuid = ?",
-        (entry_uuid,),
-    )
+    if entry[10] == "created":
+        conn.close()
+        return {"code": 400, "success": False, "message": "Entry not reviewed."}
+    if entry[10] == "selected":
+        c.execute(
+            "update entries set status = 'reviewed' where uuid = ?",
+            (entry_uuid,),
+        )
+        status = "reviewed"
+    else:
+        c.execute(
+            "update entries set status = 'selected' where uuid = ?",
+            (entry_uuid,),
+        )
+        status = "selected"
     conn.commit()
     conn.close()
     return {
@@ -326,6 +337,6 @@ def select(entry_uuid):
             "description": entry[7],
             "selector": entry[8],
             "reviewer": entry[9],
-            "status": "selected",
+            "status": status,
         },
     }

@@ -120,6 +120,7 @@
       </h2>
       <div id="page-4-container"></div>
     </div>
+    <input type="file" id="review-files" class="hidden" />
     <script>
       var token = Cookies.get("token");
       processDataHref();
@@ -165,7 +166,7 @@
                 "w-2",
                 "rounded",
                 "shadow",
-                "bg-green-300",
+                "bg-green-200",
                 "mr-1"
               );
               var reviewed_dom = document.createElement("span");
@@ -174,7 +175,7 @@
                 "w-2",
                 "rounded",
                 "shadow",
-                "bg-green-400",
+                "bg-green-500",
                 "mr-1"
               );
               var selected_dom = document.createElement("span");
@@ -214,7 +215,7 @@
               reviewed:
                 "icon-ic_fluent_checkmark_circle_32_regular text-green-400",
               selected:
-                "icon-ic_fluent_checkmark_circle_32_regular text-blue-600",
+                "icon-ic_fluent_merge_24_regular text-blue-600",
             };
             var page_dom = [
               document.querySelector("#page-1-container"),
@@ -238,7 +239,9 @@
                 <p><span class="font-bold">选稿人：</span>${entry.selector}</p>
                 <p><span class="font-bold">审稿人：</span>${entry.reviewer}</p>
               </div>
-              <div data-with-permission="entries.review.${window.issue_id}" class="hidden">
+              <div data-with-permission="entries.review.${
+                window.issue_id
+              }" class="hidden">
                 <button
                   data-href="/api/entries/getasset/${entry.uuid}"
                   class="px-3 py-1.5 rounded hover:bg-gray-100"
@@ -250,6 +253,16 @@
                   class="px-3 py-1.5 rounded hover:bg-gray-100"
                 >
                   审稿
+                </button>
+              </div>
+              <div data-with-permission="entries.select.${
+                window.issue_id
+              }" class="hidden">
+                <button
+                  data-select-uuid="${entry.uuid}"
+                  class="px-3 py-1.5 rounded hover:bg-gray-100"
+                >
+                  选录
                 </button>
               </div>
               `;
@@ -272,6 +285,8 @@
             });
             processDataHref();
             processPermission();
+            processReviewButton();
+            processSelectButton();
           } else {
             sendToast.error(data.message);
           }
@@ -321,6 +336,93 @@
             sendToast.error(data.message);
           }
         });
+    </script>
+    <script>
+      window.review_uuid = null;
+      var review_files = document.querySelector("#review-files");
+      review_files.addEventListener("change", (event) => {
+        if (review_files.files.length == 0 || review_files.files == null) {
+          return;
+        }
+        if (window.review_uuid == null) {
+          sendToast.error("Client error: review_uuid is null.");
+          return;
+        }
+        var uuid = window.review_uuid;
+        var file = event.target.files[0];
+        var formData = new FormData();
+        formData.append("file", file);
+        sendToast.info("正在上传文件...");
+        axios
+          .post(`/api/entries/review/${uuid}`, formData, {
+            headers: {
+              Authorization: token,
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((result) => {
+            var data = result.data;
+            console.log(data);
+            if (data.code == 200) {
+              sendToast.success("审核文件上传成功！");
+              setTimeout(() => {
+                location.reload();
+              }, 1000);
+            } else {
+              sendToast.error(data.message);
+            }
+          });
+      });
+      var processReviewButton = () => {
+        document.querySelectorAll("[data-review-uuid]").forEach((e) => {
+          e.addEventListener("click", (event) => {
+            var uuid = event.target.getAttribute("data-review-uuid");
+            var review_files = document.querySelector("#review-files");
+            window.review_uuid = uuid;
+            review_files.files = null;
+            sendToast.info("请选择审核并修改过后的文件，并上传。")
+            review_files.click();
+          });
+        });
+      }
+    </script>
+    <script>
+      var processSelectButton = () => {
+        document.querySelectorAll("[data-select-uuid]").forEach((e) => {
+          e.addEventListener("click", (event) => {
+            var uuid = event.target.getAttribute("data-select-uuid");
+            axios
+              .post(
+                `/api/entries/select/${uuid}`,
+                {},
+                {
+                  headers: {
+                    Authorization: token,
+                  },
+                }
+              )
+              .then((result) => {
+                var data = result.data;
+                console.log(data);
+                if (data.code == 200) {
+                  if (data.data.status == "selected") {
+                    sendToast.success("选录成功！");
+                    setTimeout(() => {
+                      location.reload();
+                    }, 1000);
+                  } else if(data.data.status == "created") {
+                    sendToast.success("取消选录成功！");
+                    setTimeout(() => {
+                      location.reload();
+                    }, 1000);
+                  }
+                } else {
+                  sendToast.error(data.message);
+                }
+              });
+          });
+        });
+      }
     </script>
   </body>
 </html>

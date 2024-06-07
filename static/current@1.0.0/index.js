@@ -15,7 +15,6 @@ var processPermission = () => {
             .querySelectorAll("[data-with-permission]")
             .forEach((item) => {
               item.classList.remove("hidden");
-              console.log(item);
             });
         } else {
           document
