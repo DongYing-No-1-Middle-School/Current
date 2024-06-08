@@ -113,22 +113,22 @@ class Users:
         conn.commit()
         conn.close()
 
-    def delete(self, userid) -> None:
+    def delete(self, username) -> None:
         """Delete user.
 
         Args:
-            userid (int): The user id."""
+            username (str): The username."""
         conn = sqlite3.connect(self.oriondb)
         c = conn.cursor()
-        c.execute("DELETE FROM users WHERE id=?", (userid,))
+        c.execute("DELETE FROM users WHERE name=?", (username,))
         conn.commit()
         conn.close()
 
-    def update(self, userid, **kwargs) -> None:
+    def update(self, username, **kwargs) -> None:
         """Update user.
 
         Args:
-            userid (int): The user id.
+            username (str): The username.
             **kwargs: Extra fields."""
         conn = sqlite3.connect(self.oriondb)
         c = conn.cursor()
@@ -137,8 +137,8 @@ class Users:
             if key == "passwd":
                 kwargs[key] = hashlib.sha256(kwargs[key].encode()).hexdigest()
             query += key + "=?, "
-        query = query[:-2] + " WHERE id=?"
-        c.execute(query, (*kwargs.values(), userid))
+        query = query[:-2] + " WHERE name=?"
+        c.execute(query, (*kwargs.values(), username))
         conn.commit()
         conn.close()
 
