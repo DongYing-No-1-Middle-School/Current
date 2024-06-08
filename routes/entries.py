@@ -1,7 +1,6 @@
 """Routes of entries (create, upload, review, select...)"""
 
 import sqlite3
-import time
 import uuid
 
 from flask import Blueprint, current_app, request, send_file
@@ -14,6 +13,7 @@ oriondb = current_app.config["oriondb"]
 users = orion.Users(oriondb, ["grade", "classnum"])
 sessions = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
+auditlog = orion.AuditLog(oriondb)
 
 
 @entries.route("/api/entries/create", methods=["POST"])
@@ -64,6 +64,9 @@ def create():
     c.close()
     conn.commit()
     conn.close()
+    auditlog.log(
+        "entries.create", sessions.get_user(token), f"Entry {entry_uuid} created."
+    )
     return {
         "code": 200,
         "success": True,
@@ -117,6 +120,9 @@ def upload(entry_uuid):
     )
     conn.commit()
     conn.close()
+    auditlog.log(
+        "entries.upload", sessions.get_user(token), f"Entry {entry_uuid} uploaded."
+    )
     return {
         "code": 200,
         "success": True,
@@ -244,6 +250,11 @@ def review(entry_uuid):
     )
     conn.commit()
     conn.close()
+    auditlog.log(
+        "entries.review",
+        sessions.get_user(token),
+        f"Entry {entry[4]} ({entry_uuid}) reviewed.",
+    )
     return {
         "code": 200,
         "success": True,
@@ -325,6 +336,11 @@ def select(entry_uuid):
         status = "selected"
     conn.commit()
     conn.close()
+    auditlog.log(
+        "entries.select",
+        sessions.get_user(token),
+        f"Entry {entry_uuid} was selected to issue {issue_id}.",
+    )
     return {
         "code": 200,
         "success": True,

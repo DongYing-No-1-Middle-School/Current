@@ -6,9 +6,11 @@ new Python programs.
 from .user import Users
 from .permissions import Permissions
 from .sessions import Sessions
+from .auditlog import AuditLog
 
 __all__ = [
     "user",
     "sessions",
     "permissions",
+    "auditlog",
 ]

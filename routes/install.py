@@ -35,6 +35,7 @@ def index():
             users = orion.Users(oriondb, ["grade", "classnum"])
             session = orion.Sessions(oriondb)
             permissions = orion.Permissions(oriondb)
+            auditlog = orion.AuditLog(oriondb)
             conn = sqlite3.connect("current.db")
             c = conn.cursor()
             c.execute(

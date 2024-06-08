@@ -10,6 +10,7 @@ oriondb = current_app.config["oriondb"]
 users = orion.Users(oriondb, ["grade", "classnum"])
 session = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
+auditlog = orion.AuditLog(oriondb)
 
 
 @webpage.route("/")

@@ -10,6 +10,7 @@ oriondb = current_app.config["oriondb"]
 users = orion.Users(oriondb, ["grade", "classnum"])
 sessions = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
+auditlog = orion.AuditLog(oriondb)
 
 
 @clients.route("/api/clients/login", methods=["POST"])
@@ -29,8 +30,10 @@ def login():
     state = users.verify(username, password)
     if state:
         token = sessions.create(username)
+        auditlog.log("clients.login", sessions.get_user(token), f"New login session.")
         return {"code": 200, "success": True, "data": {"token": token}}
     else:
+        auditlog.log("clients.login", username, f"Failed login attempt.")
         return {"code": 401, "success": False, "message": "Wrong username or password."}
 
 
@@ -86,6 +89,7 @@ def logout():
         token = request.headers["Authorization"]
     except KeyError:
         return {"code": 400, "success": False, "message": "Bad request."}
+    auditlog.log("clients.logout", sessions.get_user(token), "Logout session for {token}")
     sessions.delete(token)
     return {"code": 200, "success": True}
 
@@ -112,4 +116,5 @@ def changepass():
         return {"code": 401, "success": False, "message": "Wrong old password."}
     users.update(username, passwd=newpass)
     sessions.purge_user(username)
+    auditlog.log("clients.changepass", sessions.get_user(username), f"Password changed for {username}")
     return {"code": 200, "success": True}

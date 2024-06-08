@@ -13,6 +13,7 @@ oriondb = current_app.config["oriondb"]
 users = orion.Users(oriondb, ["grade", "classnum"])
 sessions = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
+auditlog = orion.AuditLog(oriondb)
 
 
 @issues.route("/api/issues/create", methods=["POST"])
@@ -48,6 +49,11 @@ def create():
     )
     conn.commit()
     conn.close()
+    auditlog.log(
+        "issues.create",
+        sessions.get_user(token),
+        f"New issue created: {issue_id} with leader {leader}.",
+    )
     return {"code": 200, "success": True}
 
 
@@ -126,5 +132,10 @@ def publish(issue_id):
         return {"code": 404, "success": False, "message": "Issue not found."}
     pdf.save(f"uploads/issues/{issue_id}.pdf")
     c.execute("update issues set ispublished = 1 where id = ?", (issue_id,))
+    auditlog.log(
+        "issues.publish",
+        sessions.get_user(token),
+        f"Published issue {issue_id} with pdf {pdf.filename}.",
+    )
     conn.commit()
     conn.close()
