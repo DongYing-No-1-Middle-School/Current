@@ -30,6 +30,12 @@ def login():
     return render_template("login.html")
 
 
+@webpage.route("/drafts")
+def draft():
+    """Draft page."""
+    return render_template("drafts.html")
+
+
 @webpage.route("/settings")
 def settings():
     """Personal settings page."""

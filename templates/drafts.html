@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Current</title>
+    <link href="/static/current@1.0.0/index.css" rel="stylesheet" />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
+      rel="stylesheet"
+    />
+    <script src="/static/axois@1.7.2/axios.min.js"></script>
+    <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
+    <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+    <script src="/static/current@1.0.0/index.js"></script>
+  </head>
+  <body class="h-full bg-[#fafafa]">
+    <header class="px-5 pb-2 bg-white border-b-2">
+      <div>
+        <nav class="flex flex-row justify-between items-center mx-3 pt-5 pb-2">
+          <div class="flex flex-row h-8">
+            <a href="/" class="">
+              <span class="sr-only">Current</span>
+              <img
+                class="h-6 w-auto"
+                src="/static/img@1.0.0/current.png"
+                alt=""
+              />
+            </a>
+            <div class="hidden login-show flex flex-row">
+              <i
+                class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
+              ></i>
+              <p>
+                <span id="username" class="font-bold"></span>
+                <a id="logout" href="#" class="rounded p-1 hover:bg-gray-100"
+                  >退出登录</a
+                >
+              </p>
+            </div>
+          </div>
+          <div class="login-hidden">
+            <button
+              data-href="/login"
+              class="px-3 py-1.5 rounded text-white bg-indigo-600"
+            >
+              登录
+            </button>
+          </div>
+        </nav>
+      </div>
+      <div class="hidden login-show">
+        <div class="flex flex-row gap-2">
+          <button data-href="/" class="px-3 py-1.5 rounded hover:bg-gray-100">
+            首页
+          </button>
+          <button
+            data-href="/drafts"
+            class="px-3 py-1.5 rounded bg-gray-200"
+          >
+            草稿
+          </button>
+          <button
+            data-href="/settings"
+            class="px-3 py-1.5 rounded hover:bg-gray-100"
+          >
+            个人设置
+          </button>
+          <button
+            data-href="/management"
+            data-with-permission="management.enter"
+            class="hidden px-3 py-1.5 rounded hover:bg-gray-100"
+          >
+            管理面板
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="mt-4 mx-10 lg:mx-[20%]">
+      <div
+        class="flex flex-col bg-white rounded-lg border shadow items-center p-10"
+      >
+        <p>We're sorry but</p>
+        <h2 class="font-bold text-lg">The feature hasn't implement!</h2>
+      </div>
+    </div>
+    <script>
+      verifyUser(onsuccess = (userdetail) => {
+        console.log("Logged in");
+      })
+      regLogoutButton();
+      processDataHref();
+      processPermission();
+    </script>
+  </body>
+</html>
