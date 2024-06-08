@@ -1,5 +1,6 @@
 import json
 import sqlite3
+import os
 from flask import Blueprint, current_app, request, render_template
 
 import orion
@@ -24,10 +25,11 @@ def index():
                 "flask": {
                     "debug": False,
                 },
-                "oriondb": {"path": "orion.db"},
             }
             with open("config.json", "w") as f:
                 f.write(json.dumps(config_template, indent=4))
+            os.makedirs("uploads", exist_ok=True)
+            os.makedirs("uploads/issues", exist_ok=True)
             nowstep = 2
             return {"code": 200, "success": True}
         if step == 2:

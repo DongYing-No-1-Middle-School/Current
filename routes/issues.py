@@ -3,7 +3,7 @@
 import sqlite3
 import time
 
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request, send_file
 
 import orion
 
@@ -130,6 +130,9 @@ def publish(issue_id):
     if not issue:
         conn.close()
         return {"code": 404, "success": False, "message": "Issue not found."}
+    elif issue[8]:
+        conn.close()
+        return {"code": 403, "success": False, "message": "Issue already published."}
     pdf.save(f"uploads/issues/{issue_id}.pdf")
     c.execute("update issues set ispublished = 1 where id = ?", (issue_id,))
     auditlog.log(
@@ -139,3 +142,21 @@ def publish(issue_id):
     )
     conn.commit()
     conn.close()
+    return {"code": 200, "success": True}
+
+
+@issues.route("/api/issues/getpdf/<issue_id>", methods=["GET"])
+def getpdf(issue_id):
+    """Get the pdf of an issue."""
+    conn = sqlite3.connect("current.db")
+    c = conn.cursor()
+    c.execute("select * from issues where id = ?", (issue_id,))
+    issue = c.fetchone()
+    conn.close()
+    if not issue:
+        return {"code": 404, "success": False, "message": "Issue not found."}
+    elif not issue[8]:
+        return {"code": 403, "success": False, "message": "Issue not published."}
+    return send_file(
+        f"uploads/issues/{issue_id}.pdf", download_name=f"第{issue_id}期.pdf"
+    )

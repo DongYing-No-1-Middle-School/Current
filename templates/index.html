@@ -115,51 +115,12 @@
             if (data.code == 200) {
               var issues = data.data;
               var issueList = document.getElementById("issue-list");
-              inprogress_template = `
-              <div class="mr-3">
-                <i
-                  class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"
-                ></i>
-              </div>
-              <div class="flex-1 flex-col">
-                <h2>第 {!issue_id!} 期</h2>
-                <p>计划出版日期：{!publish_date!}</p>
-                <p>
-                  剩余天数：<label class="border rounded px-2"
-                    >{!left_days!} 天</label
-                  >
-                </p>
-              </div>
-              <div>
-                <button
-                  data-href="/issue/{!issue_id!}"
-                  class="px-3 py-1.5 rounded hover:bg-gray-100"
-                >
-                  查看
-                </button>
-                <div data-with-permission="issues.publish" class="hidden">
-                  <button
-                    data-href="/issue/{!issue_id!}#publish"
-                    class="px-3 py-1.5 rounded hover:bg-gray-100"
-                  >
-                    发布
-                  </button>
-                </div>
-              </div>`;
               issues.forEach((issue) => {
                 var issueItem = document.createElement("div");
                 if (issue.ispublished) {
-                  return;
-                } else {
-                  var thisdom = inprogress_template;
-                  thisdom = thisdom.replaceAll("{!issue_id!}", issue.id);
                   var publish_date = new Date(
                     issue.date * 1000
                   ).toLocaleDateString();
-                  thisdom = thisdom.replaceAll(
-                    "{!publish_date!}",
-                    publish_date
-                  );
                   var left_days = Math.floor(
                     (new Date(issue.date * 1000) - new Date()) /
                       1000 /
@@ -167,7 +128,77 @@
                       60 /
                       24
                   );
-                  thisdom = thisdom.replaceAll("{!left_days!}", left_days);
+                  template = `
+                  <div class="mr-3">
+                    <i
+                      class="icon-ic_fluent_merge_24_regular text-blue-600 text-xl"
+                    ></i>
+                  </div>
+                  <div class="flex-1 flex-col">
+                    <h2>第 ${issue.id} 期</h2>
+                    <p>出版日期：${publish_date}</p>
+                  </div>
+                  <div>
+                    <button
+                      data-href="/issue/${issue.id}"
+                      class="hidden px-3 py-1.5 rounded hover:bg-gray-100"
+                    >
+                      统计信息
+                    </button>
+                    <div data-with-permission="issues.publish" class="hidden">
+                      <button
+                        data-href="/issue/${issue.id}"
+                        class="px-3 py-1.5 rounded hover:bg-gray-100"
+                      >
+                        查看
+                      </button>
+                    </div>
+                  </div>`;
+                  var thisdom = template;
+                  issueItem.innerHTML = thisdom;
+                } else {
+                  var publish_date = new Date(
+                    issue.date * 1000
+                  ).toLocaleDateString();
+                  var left_days = Math.floor(
+                    (new Date(issue.date * 1000) - new Date()) /
+                      1000 /
+                      60 /
+                      60 /
+                      24
+                  );
+                  template = `
+                  <div class="mr-3">
+                    <i
+                      class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"
+                    ></i>
+                  </div>
+                  <div class="flex-1 flex-col">
+                    <h2>第 ${issue.id} 期</h2>
+                    <p>计划出版日期：${publish_date}</p>
+                    <p>
+                      剩余天数：<label class="border rounded px-2"
+                        >${left_days} 天</label
+                      >
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      data-href="/issue/${issue.id}"
+                      class="px-3 py-1.5 rounded hover:bg-gray-100"
+                    >
+                      查看
+                    </button>
+                    <div data-with-permission="issues.publish" class="hidden">
+                      <button
+                        data-href="/issue/${issue.id}#publish"
+                        class="px-3 py-1.5 rounded hover:bg-gray-100"
+                      >
+                        发布
+                      </button>
+                    </div>
+                  </div>`;
+                  var thisdom = template;
                   issueItem.innerHTML = thisdom;
                 }
                 issueItem.classList.add(
