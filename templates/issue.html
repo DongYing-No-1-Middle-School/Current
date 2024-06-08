@@ -18,8 +18,10 @@
     <script src="/static/toast-js@1.0.0/toast.min.js"></script>
     <script src="/static/current@1.0.0/index.js"></script>
     <script>
-      window.issue_id = {{ issue_id }};
+      window.issue_id = {{ issue_id }}
     </script>
+    <script src="/static/jszip@3.10.1/jszip.min.js"></script>
+    <script src="/static/filesaver@2.0.4/FileSaver.min.js"></script>
   </head>
   <body class="h-full bg-[#fafafa]">
     <header class="px-5 pb-2 bg-white border-b-2">
@@ -97,14 +99,22 @@
           </div>
         </div>
       </div>
-      <button
-        data-href="/issue/{{ issue_id }}/create"
-        data-with-permission="entries.create"
-        class="hidden px-3 py-1.5 rounded text-white bg-indigo-600"
-      >
-        <i class="icon-ic_fluent_add_circle_24_regular"></i>
-        创建投稿
-      </button>
+      <div>
+        <button
+          data-href="/issue/{{ issue_id }}/create"
+          data-with-permission="entries.create"
+          class="hidden px-3 py-1.5 rounded text-white bg-indigo-600"
+        >
+          <i class="icon-ic_fluent_add_circle_24_regular"></i>
+          创建投稿
+        </button>
+        <button
+          id="download-all"
+          class="px-3 py-1.5 rounded hover:bg-gray-100"
+        >
+          批量下载
+        </button>
+      </div>
       <h2 class="text-xl font-bold my-5">第一版</h2>
       <div id="page-1-container"></div>
       <h2 class="text-xl font-bold my-5">
@@ -141,7 +151,7 @@
         .then((result) => {
           var data = result.data;
           console.log(data);
-          if (data.code == 200) {
+          if (data.code === 200) {
             // Render statical data
             var statical = data.data.count;
             var created_total = 0;
@@ -311,7 +321,7 @@
         .then((result) => {
           var data = result.data;
           console.log(data);
-          if (data.code == 200) {
+          if (data.code === 200) {
             var leader = data.data.leader;
             var editors = data.data.editors;
             var respeditor = data.data.respeditor;
@@ -349,7 +359,7 @@
       window.review_uuid = null;
       var review_files = document.querySelector("#review-files");
       review_files.addEventListener("change", (event) => {
-        if (review_files.files.length == 0 || review_files.files == null) {
+        if (review_files.files.length === 0) {
           return;
         }
         if (window.review_uuid == null) {
@@ -371,7 +381,7 @@
           .then((result) => {
             var data = result.data;
             console.log(data);
-            if (data.code == 200) {
+            if (data.code === 200) {
               sendToast.success("审核文件上传成功！");
               event.target.files = null;
               setTimeout(() => {
@@ -414,13 +424,13 @@
               .then((result) => {
                 var data = result.data;
                 console.log(data);
-                if (data.code == 200) {
-                  if (data.data.status == "selected") {
+                if (data.code === 200) {
+                  if (data.data.status === "selected") {
                     sendToast.success("选录成功！");
                     setTimeout(() => {
                       location.reload();
                     }, 1000);
-                  } else if(data.data.status == "created") {
+                  } else if(data.data.status === "reviewed") {
                     sendToast.success("取消选录成功！");
                     setTimeout(() => {
                       location.reload();
@@ -433,6 +443,44 @@
           });
         });
       }
+    </script>
+    <script>
+      async function downloadAllEntries(entries) {
+        const zip = new JSZip();
+
+        for (let entry of entries) {
+          const entryFolder = zip.folder(entry.title);
+          const response = await axios.get(`/api/entries/getasset/${entry.uuid}`, { responseType: 'blob' });
+          entryFolder.file(`${entry.filename}`, response.data, { binary: true });
+        }
+
+        zip.generateAsync({ type: 'blob' }).then(blob => {
+          saveAs(blob, `第 ${window.issue_id} 期的所有稿件 - Current.zip`);
+          sendToast.success("所有稿件下载成功！");
+        });
+      }
+
+      // Usage:
+      // downloadAllEntries(entries);
+      document.querySelector("button#download-all").addEventListener("click", () => {
+        sendToast.info("正在下载所有稿件，请稍后...");
+        axios
+            .get(`/api/entries/listissue/${window.issue_id}`, {
+              headers: {
+                Authorization: token,
+              },
+            })
+            .then((result) => {
+              var data = result.data;
+              console.log(data);
+              if (data.code === 200) {
+                var entries = data.data.list;
+                downloadAllEntries(entries);
+              } else {
+                sendToast.error(data.message);
+              }
+            });
+      });
     </script>
   </body>
 </html>
