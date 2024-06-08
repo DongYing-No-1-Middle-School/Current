@@ -44,6 +44,14 @@ def create():
     entry_uuid = str(uuid.uuid4())
     conn = sqlite3.connect("current.db")
     c = conn.cursor()
+    c.execute("select * from issues where id = ?", (issue_id,))
+    issue = c.fetchone()
+    if not issue:
+        conn.close()
+        return {"code": 404, "success": False, "message": "Issue not found."}
+    elif issue[8]:
+        conn.close()
+        return {"code": 400, "success": False, "message": "Issue is published."}
     c.execute(
         """insert into entries (uuid, issue_id, filename, page, title, origin, wordcount, description, selector, reviewer, status)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""",
