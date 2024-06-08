@@ -231,9 +231,6 @@ def review(entry_uuid):
         (entry_uuid,),
     )
     entry = c.fetchone()
-    if not entry:
-        conn.close()
-        return {"code": 404, "success": False, "message": "Entry not found."}
     issue_id = entry[1]
     if not permissions.has_permission(
         sessions.get_user(token), f"entries.review.{issue_id}"
@@ -242,6 +239,16 @@ def review(entry_uuid):
             "code": 403,
             "success": False,
             "message": f"Access denied by permission controller: IsGranted(entries.review.{issue_id})",
+        }
+    if not entry:
+        conn.close()
+        return {"code": 404, "success": False, "message": "Entry not found."}
+    elif entry[10] != "created":
+        conn.close()
+        return {
+            "code": 400,
+            "success": False,
+            "message": "Entry is not ready for review.",
         }
     file.save(f"uploads/{entry_uuid}")
     c.execute(

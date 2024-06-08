@@ -281,6 +281,14 @@
                 "p-5",
                 "w-full"
               );
+              if(entry.status === "created" || entry.status === "pending") {
+                entryItem.querySelector("[data-select-uuid]").classList.add("hidden");
+              } else if(entry.status === "reviewed") {
+                entryItem.querySelector("[data-review-uuid]").innerText = "重新审核"
+              } else if(entry.status === "selected") {
+                entryItem.querySelector("[data-review-uuid]").classList.add("hidden");
+                entryItem.querySelector("[data-select-uuid]").innerText = "取消选录";
+              }
               page_dom[entry.page - 1].appendChild(entryItem);
             });
             processDataHref();
@@ -365,10 +373,12 @@
             console.log(data);
             if (data.code == 200) {
               sendToast.success("审核文件上传成功！");
+              event.target.files = null;
               setTimeout(() => {
                 location.reload();
               }, 1000);
             } else {
+              event.target.files = null;
               sendToast.error(data.message);
             }
           });
