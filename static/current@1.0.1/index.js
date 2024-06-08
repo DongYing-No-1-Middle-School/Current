@@ -1,4 +1,5 @@
 var processPermission = () => {
+  var token = Cookies.get("token");
   axios
     .get("/api/clients/permissions", {
       headers: {
