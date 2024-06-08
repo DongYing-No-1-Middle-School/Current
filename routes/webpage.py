@@ -13,6 +13,10 @@ permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)
 
 
+VersionNumber = "1.0.1"
+VersionVCS = "fdfqef"
+
+
 @webpage.route("/")
 def index():
     """Index page."""
@@ -39,7 +43,7 @@ def draft():
 @webpage.route("/settings")
 def settings():
     """Personal settings page."""
-    return render_template("settings.html")
+    return render_template("settings.html", version_number=VersionNumber)
 
 
 @webpage.route("/issue/<int:issue_id>")
