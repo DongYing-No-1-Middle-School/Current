@@ -1,7 +1,7 @@
 """Login sessions management for Orion"""
 
 import sqlite3
-from datetime import time
+import time
 
 
 class AuditLog:
