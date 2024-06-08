@@ -18,8 +18,8 @@
     <script src="/static/toast-js@1.0.0/toast.min.js"></script>
     <script src="/static/current@1.0.1/index.js"></script>
   </head>
-  <body class="h-full bg-[#fafafa]">
-    <header class="px-5 pb-2 bg-white border-b-2">
+  <body class="flex flex-col h-full bg-[#fafafa]">
+    <header class="flex-grow-0 px-5 pb-2 bg-white border-b-2">
       <div>
         <nav class="flex flex-row justify-between items-center mx-3 pt-5 pb-2">
           <div class="flex flex-row h-8">
@@ -80,7 +80,7 @@
         </div>
       </div>
     </header>
-    <div class="mt-4 mx-10 lg:mx-[20%]">
+    <main class="flex-grow mt-4 mx-10 lg:mx-[20%]">
       <div id="issue-list" class="hidden login-show">
         <div class="mb-5 gap-5">
           <button
@@ -99,7 +99,25 @@
       >
         <p>登录到 Current，开始创作之旅。</p>
       </div>
-    </div>
+    </main>
+    <footer
+      class="flex-grow-0 w-full mt-5 px-10 lg:px-[20%] py-10 bg-white border-t-2"
+    >
+      <img
+        class="h-10 w-auto"
+        src="/static/img@1.0.0/current.png"
+        alt="Current Logo"
+      />
+      <p class="text-sm text-gray-500 mt-5">
+        Current - A intelligent platform for scholar newspaper.
+      </p>
+      <p class="text-sm text-gray-500 mt-1">
+        Made by
+        <a href="https://codezhangborui.com" class="text-indigo-600"
+          >CodeZhangBorui</a
+        >, All right reserved.
+      </p>
+    </footer>
     <script>
       var token = Cookies.get("token");
       var requestIssues = () => {
@@ -225,10 +243,12 @@
       processDataHref();
     </script>
     <script>
-      verifyUser(onsuccess = (userdetail) => {
-        console.log("Logged in");
-        requestIssues();
-      })
+      verifyUser(
+        (onsuccess = (userdetail) => {
+          console.log("Logged in");
+          requestIssues();
+        })
+      );
       regLogoutButton();
     </script>
   </body>

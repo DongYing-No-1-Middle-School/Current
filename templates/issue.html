@@ -23,8 +23,8 @@
     <script src="/static/jszip@3.10.1/jszip.min.js"></script>
     <script src="/static/filesaver@2.0.4/FileSaver.min.js"></script>
   </head>
-  <body class="h-full bg-[#fafafa]">
-    <header class="px-5 pb-2 bg-white border-b-2">
+  <body class="flex flex-col h-full bg-[#fafafa]">
+    <header class="flex-grow-0 px-5 pb-2 bg-white border-b-2">
       <div>
         <nav class="flex flex-row justify-between items-center mx-3 pt-5 pb-2">
           <div class="flex flex-row h-8">
@@ -52,8 +52,11 @@
         </nav>
       </div>
     </header>
-    <div class="mt-4 mx-10 lg:mx-[20%]">
-      <div id="dashboard-container" class="bg-white rounded-lg border shadow p-10 mb-3">
+    <main class="flex-grow mt-4 mx-10 lg:mx-[20%]">
+      <div
+        id="dashboard-container"
+        class="bg-white rounded-lg border shadow p-10 mb-3"
+      >
         <h2 class="text-xl font-bold mb-2">Dashboard</h2>
         <div class="flex flex-col">
           <div class="flex flex-row justify-between my-3">
@@ -80,7 +83,10 @@
           <div data-statical-render="4" class="flex flex-row mt-1 h-6"></div>
         </div>
       </div>
-      <div id="cooperator-container" class="bg-white rounded-lg border shadow p-10 mb-3">
+      <div
+        id="cooperator-container"
+        class="bg-white rounded-lg border shadow p-10 mb-3"
+      >
         <h2 class="text-xl font-bold mb-2">协作者信息</h2>
         <div class="flex flex-col">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -99,7 +105,11 @@
           </div>
         </div>
       </div>
-      <div id="publish" data-with-permission="issues.publish" class="hidden bg-white rounded-lg border shadow p-10 mb-3">
+      <div
+        id="publish"
+        data-with-permission="issues.publish"
+        class="hidden bg-white rounded-lg border shadow p-10 mb-3"
+      >
         <h2 class="text-xl font-bold mb-2">发布 第 {{ issue_id }} 期</h2>
         <div class="col-span-full">
           <label
@@ -111,9 +121,7 @@
             class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
           >
             <div class="text-center">
-              <div
-                class="mt-4 flex flex-col text-sm leading-6 text-gray-600"
-              >
+              <div class="mt-4 flex flex-col text-sm leading-6 text-gray-600">
                 <p id="filename-show"></p>
                 <label
                   for="file-upload"
@@ -129,9 +137,7 @@
                 </label>
                 <p class="hidden md:block pl-1">或者拖入文件</p>
               </div>
-              <p class="text-xs leading-5 text-gray-600">
-                我们推荐：PDF
-              </p>
+              <p class="text-xs leading-5 text-gray-600">我们推荐：PDF</p>
             </div>
           </div>
         </div>
@@ -170,8 +176,26 @@
         第四版 - <span id="page-4-subject"></span>
       </h2>
       <div id="page-4-container"></div>
-    </div>
-    <input type="file" id="review-files" class="hidden" />
+      <input type="file" id="review-files" class="hidden" />
+    </main>
+    <footer
+      class="flex-grow-0 w-full mt-5 px-10 lg:px-[20%] py-10 bg-white border-t-2"
+    >
+      <img
+        class="h-10 w-auto"
+        src="/static/img@1.0.0/current.png"
+        alt="Current Logo"
+      />
+      <p class="text-sm text-gray-500 mt-5">
+        Current - A intelligent platform for scholar newspaper.
+      </p>
+      <p class="text-sm text-gray-500 mt-1">
+        Made by
+        <a href="https://codezhangborui.com" class="text-indigo-600"
+          >CodeZhangBorui</a
+        >, All right reserved.
+      </p>
+    </footer>
     <script>
       var token = Cookies.get("token");
       processDataHref();
@@ -537,39 +561,43 @@
     </script>
     <script>
       processPublishButton = () => {
-        document.querySelector("#file-upload").addEventListener("change", (event) => {
-          var filename = event.target.files[0].name;
-          document.querySelector("#filename-show").innerText = filename;
-        });
-        document.querySelector("#publish-issue").addEventListener("click", () => {
-          var file = document.querySelector("#file-upload").files[0];
-          if (file == null) {
-            sendToast.error("请先选择文件！");
-            return;
-          }
-          var formData = new FormData();
-          formData.append("pdf", file);
-          axios
-            .post(`/api/issues/publish/${window.issue_id}`, formData, {
-              headers: {
-                Authorization: token,
-                "Content-Type": "multipart/form-data",
-              },
-            })
-            .then((result) => {
-              var data = result.data;
-              console.log(data);
-              if (data.code === 200) {
-                sendToast.success("发布成功！");
-                setTimeout(() => {
-                  location.reload();
-                }, 1000);
-              } else {
-                sendToast.error(data.message);
-              }
-            });
-        });
-      }
+        document
+          .querySelector("#file-upload")
+          .addEventListener("change", (event) => {
+            var filename = event.target.files[0].name;
+            document.querySelector("#filename-show").innerText = filename;
+          });
+        document
+          .querySelector("#publish-issue")
+          .addEventListener("click", () => {
+            var file = document.querySelector("#file-upload").files[0];
+            if (file == null) {
+              sendToast.error("请先选择文件！");
+              return;
+            }
+            var formData = new FormData();
+            formData.append("pdf", file);
+            axios
+              .post(`/api/issues/publish/${window.issue_id}`, formData, {
+                headers: {
+                  Authorization: token,
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then((result) => {
+                var data = result.data;
+                console.log(data);
+                if (data.code === 200) {
+                  sendToast.success("发布成功！");
+                  setTimeout(() => {
+                    location.reload();
+                  }, 1000);
+                } else {
+                  sendToast.error(data.message);
+                }
+              });
+          });
+      };
       var token = Cookies.get("token");
       axios
         .get(`/api/issues/info/${window.issue_id}`, {
@@ -580,18 +608,40 @@
         .then((result) => {
           var data = result.data;
           console.log(data);
-          if(data.code === 200) {
-            if(data.data.ispublished) {
-              document.querySelector("#dashboard-container").classList.add("hidden");
-              document.querySelector("#cooperator-container").classList.add("hidden");
-              document.querySelector("#operation-button-bar").classList.add("hidden");
-              document.querySelector("[data-with-permission='issues.publish']").remove();
+          if (data.code === 200) {
+            if (data.data.ispublished) {
+              document
+                .querySelector("#dashboard-container")
+                .classList.add("hidden");
+              document
+                .querySelector("#cooperator-container")
+                .classList.add("hidden");
+              document
+                .querySelector("#operation-button-bar")
+                .classList.add("hidden");
+              document
+                .querySelector("[data-with-permission='issues.publish']")
+                .remove();
               var userAgent = navigator.userAgent.toLowerCase();
               if (userAgent.includes("mobi") || userAgent.includes("android")) {
                 var pdfdiv = document.createElement("div");
-                pdfdiv.classList.add("bg-white", "rounded-lg", "border", "shadow", "p-10", "mb-3");
+                pdfdiv.classList.add(
+                  "bg-white",
+                  "rounded-lg",
+                  "border",
+                  "shadow",
+                  "p-10",
+                  "mb-3"
+                );
                 var button = document.createElement("button");
-                button.classList.add("px-3", "py-1.5", "rounded", "bg-indigo-600", "text-white", "hover:bg-indigo-500");
+                button.classList.add(
+                  "px-3",
+                  "py-1.5",
+                  "rounded",
+                  "bg-indigo-600",
+                  "text-white",
+                  "hover:bg-indigo-500"
+                );
                 button.innerText = "下载 PDF";
                 button.addEventListener("click", () => {
                   window.open(`/api/issues/getpdf/${window.issue_id}`);
@@ -601,8 +651,16 @@
               } else {
                 var pdfiframe = document.createElement("iframe");
                 pdfiframe.src = `/api/issues/getpdf/${window.issue_id}`;
-                pdfiframe.classList.add("mb-5", "w-full", "h-[65vh]", "shadow", "rounded");
-                document.querySelector("#release-pdf-show").appendChild(pdfiframe);
+                pdfiframe.classList.add(
+                  "mb-5",
+                  "w-full",
+                  "h-[65vh]",
+                  "shadow",
+                  "rounded"
+                );
+                document
+                  .querySelector("#release-pdf-show")
+                  .appendChild(pdfiframe);
               }
             } else {
               document.querySelector("#release-pdf-show").remove();
@@ -611,7 +669,7 @@
           } else {
             sendToast.error(data.message);
           }
-        })
+        });
     </script>
   </body>
 </html>

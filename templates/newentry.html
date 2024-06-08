@@ -21,8 +21,8 @@
       window.issue_id = {{ issue_id }};
     </script>
   </head>
-  <body class="h-full bg-[#fafafa]">
-    <header class="px-5 pb-2 bg-white border-b-2">
+  <body class="flex flex-col h-full bg-[#fafafa]">
+    <header class="flex-grow-0 px-5 pb-2 bg-white border-b-2">
       <div>
         <nav class="flex flex-row justify-between items-center mx-3 pt-5 pb-2">
           <div class="flex flex-row h-8">
@@ -56,7 +56,7 @@
         </nav>
       </div>
     </header>
-    <div class="mt-4 mx-10 lg:mx-[20%]">
+    <main class="flex-grow mt-4 mx-10 lg:mx-[20%]">
       <h2 class="text-xl font-bold mb-2">新建投稿</h2>
       <div class="bg-white rounded-lg border shadow p-10 mb-3">
         <form class="space-y-12">
@@ -190,7 +190,25 @@
           </div>
         </form>
       </div>
-    </div>
+    </main>
+    <footer
+      class="flex-grow-0 w-full mt-5 px-10 lg:px-[20%] py-10 bg-white border-t-2"
+    >
+      <img
+        class="h-10 w-auto"
+        src="/static/img@1.0.0/current.png"
+        alt="Current Logo"
+      />
+      <p class="text-sm text-gray-500 mt-5">
+        Current - A intelligent platform for scholar newspaper.
+      </p>
+      <p class="text-sm text-gray-500 mt-1">
+        Made by
+        <a href="https://codezhangborui.com" class="text-indigo-600"
+          >CodeZhangBorui</a
+        >, All right reserved.
+      </p>
+    </footer>
     <script>
       var token = Cookies.get("token");
       processDataHref();
@@ -232,7 +250,7 @@
             document.querySelector("button[type='submit']").disabled = false;
             return;
           }
-          if(document.getElementById("file-upload").files.length === 0) {
+          if (document.getElementById("file-upload").files.length === 0) {
             sendToast.error("请上传文件");
             document.querySelector("button[type='submit']").disabled = false;
             return;
