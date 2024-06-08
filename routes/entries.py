@@ -330,12 +330,22 @@ def select(entry_uuid):
         conn.close()
         return {"code": 400, "success": False, "message": "Entry not reviewed."}
     if entry[10] == "selected":
+        auditlog.log(
+            "entries.select",
+            sessions.get_user(token),
+            f"Entry {entry_uuid} was unselected to issue {issue_id}.",
+        )
         c.execute(
             "update entries set status = 'reviewed' where uuid = ?",
             (entry_uuid,),
         )
         status = "reviewed"
     else:
+        auditlog.log(
+            "entries.select",
+            sessions.get_user(token),
+            f"Entry {entry_uuid} was selected to issue {issue_id}.",
+        )
         c.execute(
             "update entries set status = 'selected' where uuid = ?",
             (entry_uuid,),
@@ -343,11 +353,6 @@ def select(entry_uuid):
         status = "selected"
     conn.commit()
     conn.close()
-    auditlog.log(
-        "entries.select",
-        sessions.get_user(token),
-        f"Entry {entry_uuid} was selected to issue {issue_id}.",
-    )
     return {
         "code": 200,
         "success": True,

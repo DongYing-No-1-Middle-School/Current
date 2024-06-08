@@ -89,7 +89,7 @@ def logout():
         token = request.headers["Authorization"]
     except KeyError:
         return {"code": 400, "success": False, "message": "Bad request."}
-    auditlog.log("clients.logout", sessions.get_user(token), "Logout session for {token}")
+    auditlog.log("clients.logout", sessions.get_user(token), "Logout a session.")
     sessions.delete(token)
     return {"code": 200, "success": True}
 
@@ -116,5 +116,9 @@ def changepass():
         return {"code": 401, "success": False, "message": "Wrong old password."}
     users.update(username, passwd=newpass)
     sessions.purge_user(username)
-    auditlog.log("clients.changepass", sessions.get_user(username), f"Password changed for {username}")
+    auditlog.log(
+        "clients.changepass",
+        sessions.get_user(username),
+        f"Password changed for {username}",
+    )
     return {"code": 200, "success": True}
