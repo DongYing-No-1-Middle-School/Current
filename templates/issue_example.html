@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Current | 第 1 期</title>
+    <link href="/static/current@1.0.1/index.css" rel="stylesheet" />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/tourguidejs@0.0.16/tour.min.css"
+      rel="stylesheet"
+    />
+    <script src="/static/axois@1.7.2/axios.min.js"></script>
+    <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
+    <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+    <script src="/static/current@1.0.1/index.js"></script>
+    <script src="/static/jszip@3.10.1/jszip.min.js"></script>
+    <script src="/static/filesaver@2.0.4/FileSaver.min.js"></script>
+    <script src="/static/tourguidejs@0.0.16/tour.min.js"></script>
+  </head>
+  <body class="flex flex-col h-full bg-[#fafafa]">
+    <header class="flex-grow-0 px-5 pb-2 bg-white border-b-2">
+      <div>
+        <nav class="flex flex-row justify-between items-center mx-3 pt-5 pb-2">
+          <div class="flex flex-row h-8">
+            <a href="/" class="">
+              <span class="sr-only">Current</span>
+              <img
+                class="h-6 w-auto"
+                src="/static/img@1.0.0/current.png"
+                alt=""
+              />
+            </a>
+            <div class="hidden login-show flex flex-row">
+              <i
+                class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
+              ></i>
+              <p data-href="/">
+                <span id="username" class="font-bold"></span>
+              </p>
+              <i
+                class="icon-ic_fluent_slash_forward_24_filled mx-2 text-gray-200 text-2xl"
+              ></i>
+              <p>第 <span class="font-bold">1</span> 期</p>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <main class="flex-grow mt-4 mx-10 lg:mx-[20%]">
+      <div
+        id="dashboard-container"
+        class="bg-white rounded-lg border shadow p-10 mb-3"
+      >
+        <h2 class="text-xl font-bold mb-2">Dashboard</h2>
+        <div class="flex flex-col">
+          <div class="flex flex-row justify-between my-3">
+            <div class="flex flex-col">
+              <p class="text-sm text-gray-500">已投稿</p>
+              <p class="text-2xl"><span>5</span> 条</p>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-sm text-gray-500">已审核</p>
+              <p class="text-2xl"><span>2</span> 条</p>
+            </div>
+            <div class="flex flex-col">
+              <p class="text-sm text-gray-500">已选录</p>
+              <p class="text-2xl"><span>4</span> 条</p>
+            </div>
+          </div>
+          <p class="mt-1">第一版</p>
+          <div data-statical-render="1" class="flex flex-row mt-1 h-6">
+            <span class="h-5 w-2 rounded shadow bg-green-500 mr-1"></span>
+            <span class="h-5 w-2 rounded shadow bg-green-200 mr-1"></span>
+            <span class="h-5 w-2 rounded shadow bg-green-200 mr-1"></span>
+          </div>
+          <p class="mt-1">第二版</p>
+          <div data-statical-render="2" class="flex flex-row mt-1 h-6">
+            <span class="h-5 w-2 rounded shadow bg-blue-600 mr-1"></span>
+            <span class="h-5 w-2 rounded shadow bg-blue-600 mr-1"></span>
+            <span class="h-5 w-2 rounded shadow bg-green-200 mr-1"></span>
+          </div>
+          <p class="mt-1">第三版</p>
+          <div data-statical-render="3" class="flex flex-row mt-1 h-6">
+            <span class="h-5 w-2 rounded shadow bg-blue-600 mr-1"></span>
+            <span class="h-5 w-2 rounded shadow bg-green-200 mr-1"></span>
+          </div>
+          <p class="mt-1">第四版</p>
+          <div data-statical-render="4" class="flex flex-row mt-1 h-6">
+            <span class="h-5 w-2 rounded shadow bg-blue-600 mr-1"></span>
+            <span class="h-5 w-2 rounded shadow bg-green-500 mr-1"></span>
+            <span class="h-5 w-2 rounded shadow bg-green-200 mr-1"></span>
+          </div>
+        </div>
+      </div>
+      <div
+        id="cooperator-container"
+        class="bg-white rounded-lg border shadow p-10 mb-3"
+      >
+        <h2 class="text-xl font-bold mb-2">协作者信息</h2>
+        <div class="flex flex-col">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-white rounded-lg border shadow p-4">
+              <h3 class="text-lg font-semibold">主编</h3>
+              <ul id="leader-container" class="mt-2">
+                <li class="flex items-center mr-2">
+                  <span id="username"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="bg-white rounded-lg border shadow p-4">
+              <h3 class="text-lg font-semibold">副主编</h3>
+              <ul id="editors-container" class="mt-2">
+                <li class="flex items-center mr-2">
+                  <span id="username"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="bg-white rounded-lg border shadow p-4">
+              <h3 class="text-lg font-semibold">责任编辑</h3>
+              <ul id="respeditor-container" class="mt-2">
+                <li class="flex items-center mr-2">
+                  <span id="username"></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        id="publish"
+        data-with-permission="issues.publish"
+        class="hidden bg-white rounded-lg border shadow p-10 mb-3"
+      >
+        <h2 class="text-xl font-bold mb-2">发布 第 1 期</h2>
+        <div class="col-span-full">
+          <label
+            for="file-upload"
+            class="block text-sm font-medium leading-6 text-gray-900"
+            >上传最终发布版</label
+          >
+          <div
+            class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10"
+          >
+            <div class="text-center">
+              <div class="mt-4 flex flex-col text-sm leading-6 text-gray-600">
+                <p id="filename-show"></p>
+                <label
+                  for="file-upload"
+                  class="relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500"
+                >
+                  <span>点击上传</span>
+                  <input
+                    id="file-upload"
+                    name="file-upload"
+                    type="file"
+                    class="sr-only"
+                  />
+                </label>
+                <p class="hidden md:block pl-1">或者拖入文件</p>
+              </div>
+              <p class="text-xs leading-5 text-gray-600">我们推荐：PDF</p>
+            </div>
+          </div>
+        </div>
+        <button
+          id="publish-issue"
+          class="mt-2 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          现在发布
+        </button>
+      </div>
+      <div id="release-pdf-show"></div>
+      <div id="operation-button-bar">
+        <button
+          data-href="/issue/_example/create"
+          data-with-permission="entries.create"
+          class="hidden px-3 py-1.5 rounded text-white bg-indigo-600"
+        >
+          <i class="icon-ic_fluent_add_circle_24_regular"></i>
+          创建投稿
+        </button>
+        <button id="download-all" class="px-3 py-1.5 rounded hover:bg-gray-100">
+          批量下载
+        </button>
+      </div>
+      <h2 class="text-xl font-bold my-5">第一版</h2>
+      <div id="page-1-container">
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">The Future of AI</h2>
+            <p><span class="font-bold">来源：</span>Tech Times</p>
+            <p><span class="font-bold">词数：</span>850</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>An exploration into how AI will shape our future, from healthcare to transportation.</p>
+            <p><span class="font-bold">选稿人：</span>John Doe</p>
+            <p><span class="font-bold">审稿人：</span>Jane Smith</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              审稿
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">Global Economic Trends</h2>
+            <p><span class="font-bold">来源：</span>Economic Daily</p>
+            <p><span class="font-bold">词数：</span>1200</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>An analysis of the current economic trends impacting global markets.</p>
+            <p><span class="font-bold">选稿人：</span>Mary Johnson</p>
+            <p><span class="font-bold">审稿人：</span>Robert Brown</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              审稿
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_checkmark_circle_32_regular text-green-400 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">Climate Change and Its Impact</h2>
+            <p><span class="font-bold">来源：</span>Environmental News</p>
+            <p><span class="font-bold">词数：</span>950</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>Discussing the latest findings on climate change and its effects on our planet.</p>
+            <p><span class="font-bold">选稿人：</span>Emily Davis</p>
+            <p><span class="font-bold">审稿人：</span>Michael Wilson</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              重新审稿
+            </button>
+          </div>
+        </div>
+      </div>
+      <h2 class="text-xl font-bold my-5">
+        第二版 - <span id="page-2-subject">Wonderful</span>
+      </h2>
+      <div id="page-2-container">
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">Advancements in Medical Technology</h2>
+            <p><span class="font-bold">来源：</span>Health Weekly</p>
+            <p><span class="font-bold">词数：</span>1100</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>Exploring recent breakthroughs in medical technology and their implications.</p>
+            <p><span class="font-bold">选稿人：</span>Sarah Lee</p>
+            <p><span class="font-bold">审稿人：</span>David Martin</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              审稿
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_merge_24_regular text-blue-600 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">The Rise of Electric Vehicles</h2>
+            <p><span class="font-bold">来源：</span>Auto World</p>
+            <p><span class="font-bold">词数：</span>780</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>A look into the growing popularity of electric vehicles and their benefits.</p>
+            <p><span class="font-bold">选稿人：</span>Chris Moore</p>
+            <p><span class="font-bold">审稿人：</span>Jessica Taylor</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_merge_24_regular text-blue-600 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">Innovations in Renewable Energy</h2>
+            <p><span class="font-bold">来源：</span>Green Energy Journal</p>
+            <p><span class="font-bold">词数：</span>1050</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>Examining the latest innovations in renewable energy and their impact on the environment.</p>
+            <p><span class="font-bold">选稿人：</span>Alice Kim</p>
+            <p><span class="font-bold">审稿人：</span>James Anderson</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+          </div>
+        </div>
+      </div>
+      <h2 class="text-xl font-bold my-5">
+        第三版 - <span id="page-3-subject">Technology</span>
+      </h2>
+      <div id="page-3-container">
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">The Evolution of Social Media</h2>
+            <p><span class="font-bold">来源：</span>Digital Trends</p>
+            <p><span class="font-bold">词数：</span>980</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>Tracing the evolution of social media and its influence on society.</p>
+            <p><span class="font-bold">选稿人：</span>Tom Harris</p>
+            <p><span class="font-bold">审稿人：</span>Karen White</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              审稿
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_merge_24_regular text-blue-600 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">Exploring Space: The New Frontier</h2>
+            <p><span class="font-bold">来源：</span>Space Explorer</p>
+            <p><span class="font-bold">词数：</span>1150</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>An in-depth look at recent space exploration missions and their discoveries.</p>
+            <p><span class="font-bold">选稿人：</span>Lisa Scott</p>
+            <p><span class="font-bold">审稿人：</span>Paul Clark</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+          </div>
+        </div>
+      </div>
+      <h2 class="text-xl font-bold my-5">
+        第四版 - <span id="page-4-subject">Current</span>
+      </h2>
+      <div id="page-4-container">
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_circle_32_regular text-blue-400 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">The Impact of Artificial Intelligence on Jobs</h2>
+            <p><span class="font-bold">来源：</span>Business Insight</p>
+            <p><span class="font-bold">词数：</span>890</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>Analyzing how AI is transforming the job market and its potential effects on employment.</p>
+            <p><span class="font-bold">选稿人：</span>Mark Evans</p>
+            <p><span class="font-bold">审稿人：</span>Nancy King</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              审稿
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_checkmark_circle_32_regular text-green-400 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">The Future of Education</h2>
+            <p><span class="font-bold">来源：</span>Education Today</p>
+            <p><span class="font-bold">词数：</span>1000</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>Exploring how education systems are adapting to new technologies and teaching methods.</p>
+            <p><span class="font-bold">选稿人：</span>Patricia Lewis</p>
+            <p><span class="font-bold">审稿人：</span>Steven Hall</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              重新审稿
+            </button>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row flex-nowrap bg-white rounded-lg border shadow mb-3 p-5 w-full">
+          <div class="mr-3">
+            <i
+              class="icon-ic_fluent_merge_24_regular text-blue-600 text-xl"
+            ></i>
+          </div>
+          <div class="flex-1 flex-col">
+            <h2 class="font-bold text-lg">The Growth of E-Commerce</h2>
+            <p><span class="font-bold">来源：</span>Commerce Weekly</p>
+            <p><span class="font-bold">词数：</span>940</p>
+            <p><span class="font-bold">描述：</span></p>
+            <p>Investigating the rapid growth of e-commerce and its impact on traditional retail.</p>
+            <p><span class="font-bold">选稿人：</span>Rachel Brown</p>
+            <p><span class="font-bold">审稿人：</span>Brian Harris</p>
+          </div>
+          <div>
+            <button
+              class="px-3 py-1.5 rounded hover:bg-gray-100"
+            >
+              下载
+            </button>
+          </div>
+        </div>
+      </div>
+      <input type="file" id="review-files" class="hidden" />
+    </main>
+    <footer
+      class="flex-grow-0 w-full mt-5 px-10 lg:px-[20%] py-10 bg-white border-t-2"
+    >
+      <img
+        class="h-10 w-auto"
+        src="/static/img@1.0.0/current.png"
+        alt="Current Logo"
+      />
+      <p class="text-sm text-gray-500 mt-5">
+        Current - A intelligent platform for scholar newspaper.
+      </p>
+      <p class="text-sm text-gray-500 mt-1">
+        Made by
+        <a href="https://codezhangborui.com" class="text-indigo-600"
+          >CodeZhangBorui</a
+        >, All right reserved.
+      </p>
+    </footer>
+    <script>
+      verifyUser(
+        (onsuccess = (userdetail) => {
+          console.log("Logged in");
+          requestIssues();
+          run_tourguide();
+        })
+      );
+    </script>
+    <script>
+      const toursComplete = localStorage.getItem('tg_tours_complete');
+      if(toursComplete === "1") {
+        localStorage.setItem('tg_tours_complete', "2");
+        const tg = new tourguide.TourGuideClient({
+          backdropColor: string = "rgba(20,20,21,0.3)",
+          completeOnFinish: false,
+          debug: true,
+          nextLabel: "下一步",
+          prevLabel: "上一步",
+          finishLabel: "完成",
+          steps: [
+            {
+              content: "这里可以看到投稿的情况",
+              title: "Dashboard",
+              target: document.querySelector("#dashboard-container"),
+              order: 1,
+            },
+            {
+              content: "点击这里可以进行投稿，没完成投稿任务的同学请尽快啊！",
+              title: "创建投稿",
+              target: document.querySelector("#operation-button-bar > button.px-3.py-1\\.5.rounded.text-white.bg-indigo-600"),
+              order: 2,
+            },
+            {
+              content: "当你投稿成功后，你可以在这里查看你的投稿。",
+              title: "",
+              target: document.querySelector("#page-1-container > div:nth-child(1)"),
+              order: 3,
+            },
+            {
+              content: "对于一些没有审核的稿件，可以点击这里进行审稿，别忘了审稿哦！",
+              title: "",
+              target: document.querySelector("#page-1-container > div:nth-child(2) > div:nth-child(3) > button:nth-child(2)"),
+              order: 4,
+            },
+            {
+              content: "像这样的稿件就是被选录的，会收录进下期报纸，同学们加油！",
+              title: "",
+              target: document.querySelector("#page-2-container > div:nth-child(2)"),
+              order: 5,
+            },
+            {
+              content: "开始你的编辑工作吧！",
+              title: "最后一步！🌟",
+              target: undefined,
+              order: 6,
+            }
+          ]
+        });
+        tg.onFinish(()=>{
+          window.location.href = '/'
+        })
+        tg.start();
+      } else {
+        window.location.href = '/'
+      }
+    </script>
+  </body>
+</html>

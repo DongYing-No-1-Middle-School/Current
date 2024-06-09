@@ -52,6 +52,12 @@ def issue(issue_id):
     return render_template("issue.html", issue_id=issue_id)
 
 
+@webpage.route("/issue/_example")
+def issue_example():
+    """Issue example page."""
+    return render_template("issue_example.html")
+
+
 @webpage.route("/issue/<int:issue_id>/create")
 def new_entry(issue_id):
     """New entry page."""

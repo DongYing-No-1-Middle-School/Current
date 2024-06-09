@@ -13,9 +13,14 @@
       href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
       rel="stylesheet"
     />
+    <link
+      href="/static/tourguidejs@0.0.16/tour.min.css"
+      rel="stylesheet"
+    />
     <script src="/static/axois@1.7.2/axios.min.js"></script>
     <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
     <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+    <script src="/static/tourguidejs@0.0.16/tour.min.js"></script>
     <script src="/static/current@1.0.1/index.js"></script>
   </head>
   <body class="flex flex-col h-full bg-[#fafafa]">
@@ -247,9 +252,62 @@
         (onsuccess = (userdetail) => {
           console.log("Logged in");
           requestIssues();
+          run_tourguide();
         })
       );
       regLogoutButton();
+    </script>
+    <script>
+      var run_tourguide = () => {
+        const toursComplete = localStorage.getItem('tg_tours_complete');
+        if(toursComplete === null) {
+          localStorage.setItem('tg_tours_complete', "1");
+          const tg = new tourguide.TourGuideClient({
+            backdropColor: string = "rgba(20,20,21,0.3)",
+            completeOnFinish: false,
+            debug: true,
+            nextLabel: "下一步",
+            prevLabel: "上一步",
+            finishLabel: "现在就去",
+            steps: [
+              {
+                content: "🎉 欢迎来到 Current 东营市第一中学英文报在线编辑部工作网站！🎉<br/>👋 欢迎使用 Current 进行在线投稿和编辑工作。为了让您更好地使用我们的网站，以下是一个详细的导览指南，希望能帮助您快速上手。",
+                title: "👋 Welcome to Current",
+                target: undefined,
+                order: 1
+              },
+              {
+                content: "在这里你可以开始你的编辑工作，当然也可以查看往期报纸。",
+                title: "首页🌟",
+                target: document.querySelector("body > header > div.login-show > div > button.px-3.py-1\\.5.rounded.bg-gray-200.cursor-pointer"),
+                order: 2,
+              },
+              {
+                content: "在这里查看所有的投稿",
+                title: "草稿📝",
+                target: document.querySelector("body > header > div.login-show > div > button:nth-child(2)"),
+                order: 3
+              },
+              {
+                content: "在这里你可以修改你的密码，如果你是首次登录，别忘了修改默认密码。",
+                title: "个人设置 ⚙️",
+                target: document.querySelector("body > header > div.login-show > div > button:nth-child(3)"),
+                order: 4
+              },
+              {
+                content: "点击下方按钮，让我们来帮你入门编辑工作吧！",
+                title: "下一步 ⚙️",
+                target: undefined,
+                order: 5,
+              }
+            ]
+          });
+          tg.onFinish(()=>{
+            window.location.href = '/issue/_example'
+          })
+          tg.start();
+        }
+      }
     </script>
   </body>
 </html>
