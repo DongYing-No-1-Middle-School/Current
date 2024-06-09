@@ -1,3 +1,3 @@
 # Current
 
-Current - A intelligent platform for scholar newspaper.
+Current - An intelligent platform for scholar newspaper.
