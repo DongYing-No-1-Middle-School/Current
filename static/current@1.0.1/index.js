@@ -22,13 +22,18 @@ var processPermission = () => {
             .querySelectorAll("[data-with-permission]")
             .forEach((item) => {
               var permList = item.getAttribute("data-with-permission").split(".");
-              // process a.b.c.d to a.*, a.b.*, a.b.c.*, a.b.c.d.*
-              for (var i = 1; i < permList.length; i++) {
-                var perm = permList.slice(0, i).join(".") + ".*";
-                if (permissions.includes(perm)) {
-                  item.classList.remove("hidden");
+              if (permissions.includes(permList.join("."))) {
+                item.classList.remove("hidden");
+              } else {
+                for (var i = 1; i < permList.length; i++) {
+                  var perm = permList.slice(0, i).join(".") + ".*";
+                  console.log(perm);
+                  if (permissions.includes(perm)) {
+                    item.classList.remove("hidden");
+                  }
                 }
               }
+              
             });
         }
       }
