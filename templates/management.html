@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html class="w-full h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Current | 管理面板</title>
+    <link href="/static/current@1.0.1/index.css" rel="stylesheet" />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
+      rel="stylesheet"
+    />
+    <script src="/static/axois@1.7.2/axios.min.js"></script>
+    <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
+    <script src="/static/current@1.0.1/index.js"></script>
+  </head>
+  <body class="w-full h-full bg-[#f5f5f5]">
+    <header
+      class="flex flex-row justify-between items-center w-full h-14 bg-[#3b3b3b] shadow-lg px-10 lg:px-[10%]"
+    >
+      <div class="flex flex-row items-center">
+        <a href="/" class="">
+          <span class="sr-only">Current</span>
+          <img class="h-6 w-auto" src="/static/img@1.0.0/current.png" alt="" />
+        </a>
+        <button
+          class="ml-3 px-2 py-1 rounded text-gray-100 hover:bg-[#4e4e4e]"
+          data-href="/management"
+        >
+          仪表盘
+        </button>
+        <button
+          class="ml-3 px-2 py-1 rounded text-gray-100 hover:bg-[#4e4e4e]"
+          data-href="/management/users"
+        >
+          用户管理
+        </button>
+      </div>
+      <div>
+        <button
+          id="logout-button"
+          class="ml-3 px-2 py-1 rounded text-gray-100 hover:bg-[#4e4e4e]"
+        >
+          安全退出
+        </button>
+      </div>
+    </header>
+    <main class="px-10 lg:px-[10%]">
+      <div id="breadcumb" class="my-5">
+        <p>
+          <span class="text-black data-href="/management">管理面板</span>
+        </p>
+      </div>
+      <div class="flex flex-col">
+        <div class="flex flex-col md:flex-row justify-between bg-white border shadow rounded m-3 p-5">
+          <div>
+            <p class="text-gray-500 my-3 md:mt-0">当前用户数</p>
+            <h1 id="users-count" class="text-4xl font-bold"></h1>
+          </div>
+          <div>
+            <p class="text-gray-500 my-3 md:mt-0">当前期刊数</p>
+            <h1 id="issues-count" class="text-4xl font-bold"></h1>
+          </div>
+          <div>
+            <p class="text-gray-500 my-3 md:mt-0">当前稿件数</p>
+            <h1 id="entries-count" class="text-4xl font-bold"></h1>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script>
+      processDataHref();
+    </script>
+    <script>
+      document.getElementById("logout-button").addEventListener("click", function() {
+        axios.get("/api/management/logout").then((result) => {
+          var data = result.data;
+          if(data.code == 200) {
+            location.reload();
+          } else {
+            sendToast.error(data.message);
+          }
+        });
+      })
+    </script>
+    <script>
+      axios
+        .get("/api/management/users/list")
+        .then((result) => {
+          var data = result.data;
+          if(data.code == 200) {
+            document.getElementById("users-count").innerText = data.data.length;
+          } else {
+            sendToast.error(data.message);
+          }
+        })
+      axios
+        .get("/api/issues/list")
+        .then((result) => {
+          var data = result.data;
+          if(data.code == 200) {
+            document.getElementById("issues-count").innerText = data.data.length;
+          } else {
+            sendToast.error(data.message);
+          }
+        })
+      axios
+        .get("/api/management/entries/list")
+        .then((result) => {
+          var data = result.data;
+          if(data.code == 200) {
+            document.getElementById("entries-count").innerText = data.data.length;
+          } else {
+            sendToast.error(data.message);
+          }
+        })
+    </script>
+  </body>
+</html>

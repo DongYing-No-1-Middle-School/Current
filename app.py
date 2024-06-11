@@ -37,17 +37,15 @@ app.app_context().push()
 
 # Register routes
 from routes.webpage import webpage
-
 app.register_blueprint(webpage)
 from routes.clients import clients
-
 app.register_blueprint(clients)
 from routes.issues import issues
-
 app.register_blueprint(issues)
 from routes.entries import entries
-
 app.register_blueprint(entries)
+from routes.management import management
+app.register_blueprint(management)
 
 # Register scheduler
 import crontask

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html class="w-full h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enter Sudo Mode</title>
+    <link href="/static/current@1.0.1/index.css" rel="stylesheet" />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
+      rel="stylesheet"
+    />
+    <link
+      href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
+      rel="stylesheet"
+    />
+    <script src="/static/axois@1.7.2/axios.min.js"></script>
+    <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
+    <script src="/static/current@1.0.1/index.js"></script>
+  </head>
+  <body
+    class="w-full h-full px-10 lg:px-[20%] py-10 bg-gray-800 text-gray-50 font-mono text-xl"
+  >
+    <section id="terminal">
+      <p>We trust you have received the ususal lecture from the local System Administrator. It usually boils down to these three things:</p>
+      <br/>
+      <p>#1) Respect the privacy of others.</p>
+      <p>#2) Think before you type.</p>
+      <p>#3) With great power comes great responsibility.</p>
+      <br/>
+      <p>For security purposes, please type your account password below.</p>
+      <p>If you stay active, you will not be asked for your password again for some time.</p>
+      <br/>
+    </section>
+    <input
+      id="password"
+      type="password"
+      class="w-full mt-5 px-3 py-2 rounded bg-gray-900"
+      placeholder="Password"
+    />
+    <button id="submit" class="w-full mt-5 px-3 py-2 rounded bg-gray-900">
+      Execute
+    </button>
+    <script>
+      verifyUser();
+      document.getElementById("password").focus();
+      document
+        .getElementById("password")
+        .addEventListener("keyup", function (event) {
+          if (event.key === "Enter") {
+            document.getElementById("submit").click();
+          }
+        });
+    </script>
+    <script>
+      document.getElementById("submit").addEventListener("click", function () {
+        var token = Cookies.get("token");
+        const password = document.getElementById("password").value;
+        document.getElementById("password").classList.add("hidden");
+        document.getElementById("submit").classList.add("hidden");
+        axios
+          .post(
+            "/api/management/sudo",
+            {
+              password: password,
+            },
+            {
+              headers: {
+                Authorization: token,
+              },
+            }
+          )
+          .then((result) => {
+            var data = result.data;
+            if (data.code == 200) {
+              document
+                .getElementById("terminal")
+                .appendChild(document.createElement("p")).innerText =
+                "Sudo mode activated, redirecting to management page.";
+              document
+                .getElementById("terminal")
+                .appendChild(document.createElement("br"));
+              setTimeout(() => {
+                var red = new URLSearchParams(window.location.search).get("redirect");
+                if(red != null) {
+                  window.location.href = red;
+                } else {
+                  window.location.href = "/management";
+                }
+              }, 1000);
+            } else {
+              document
+                .getElementById("terminal")
+                .appendChild(document.createElement("p")).innerText =
+                data.message;
+              document
+                .getElementById("terminal")
+                .appendChild(document.createElement("br"));
+              document.getElementById("password").classList.remove("hidden");
+              document.getElementById("submit").classList.remove("hidden");
+            }
+          });
+      });
+    </script>
+  </body>
+</html>
