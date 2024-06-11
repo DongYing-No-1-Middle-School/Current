@@ -320,16 +320,16 @@
                   data-href="/api/entries/getasset/${entry.uuid}"
                   class="px-3 py-1.5 rounded hover:bg-gray-100"
                 >
-                  <i class="icon-ic_fluent_arrow_download_32_regular"></i>
+                  下载
                 </button>
                 <button
                   data-with-permission="entries.remove.${
                     window.issue_id
                   }"
-                  data-remove-uuid="${entry.uuid}"
+                  data-preremove-uuid="${entry.uuid}"
                   class="px-3 py-1.5 rounded hover:bg-gray-100"
                 >
-                  <i class="icon-ic_fluent_delete_32_regular"></i>
+                  删除
                 </button>
                 <button
                   data-review-uuid="${entry.uuid}"
@@ -474,7 +474,7 @@
           });
       });
       var processRemoveButton = () => {
-        document.querySelectorAll("[data-remove-uuid]").forEach((e) => {
+        document.querySelectorAll("[data-preremove-uuid]").forEach((e) => {
           e.addEventListener("click", (event) => {
             var uuid = event.target.getAttribute("data-remove-uuid");
             axios
