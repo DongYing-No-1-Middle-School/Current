@@ -74,6 +74,14 @@ def index():
                 status      text
             );"""
             )
+            c.execute(
+                """create table sudo
+            (
+                token        text           
+                username     text,
+                activitytime integer
+            );"""
+            )
             nowstep = 3
             return {"code": 200, "success": True}
         if step == 3:
