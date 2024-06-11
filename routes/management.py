@@ -101,8 +101,10 @@ def sudo_login():
         c.execute("insert into sudo (token, user, activitytime) values (?, ?, ?)", (sudo_token, username, int(time.time())))
         conn.commit()
         conn.close()
+        auditlog.log("management", username, "Logged in to sudo mode.")
         return make_token_response({"code": 200, "success": True}, sudo_token)
     else:
+        auditlog.log("management", username, "Failed sudo attempt.")
         return {"code": 401, "success": False, "message": "Wrong password."}
 
 @management.route("/api/management/logout")
@@ -117,6 +119,7 @@ def sudo_logout():
     c.execute("delete from sudo where token = ?", (token,))
     conn.commit()
     conn.close()
+    auditlog.log("management", get_sudo_user(token)[1], "Logged out from sudo mode.")
     return make_token_response({"code": 200, "success": True}, "")
 
 @management.route("/api/management/users/list", methods=["GET"])
