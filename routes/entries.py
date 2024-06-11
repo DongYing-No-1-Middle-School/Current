@@ -1,5 +1,6 @@
 """Routes of entries (create, upload, review, select...)"""
 
+import os
 import sqlite3
 import uuid
 
@@ -334,6 +335,10 @@ def remove(entry_uuid):
             "success": False,
             "message": f"Access denied by permission controller: IsGranted(entries.remove.{issue_id})",
         }
+    try:
+        os.remove(f"uploads/{entry_uuid}")
+    except FileNotFoundError:
+        pass
     c.execute(
         "delete from entries where uuid = ?",
         (entry_uuid,),
