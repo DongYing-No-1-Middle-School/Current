@@ -114,12 +114,12 @@ def sudo_logout():
         token = request.cookies["sudo_token"]
     except KeyError:
         return {"code": 400, "success": False, "message": "Bad request."}
+    auditlog.log("management", get_sudo_user(token)[1], "Logged out from sudo mode.")
     conn = sqlite3.connect("current.db")
     c = conn.cursor()
     c.execute("delete from sudo where token = ?", (token,))
     conn.commit()
     conn.close()
-    auditlog.log("management", get_sudo_user(token)[1], "Logged out from sudo mode.")
     return make_token_response({"code": 200, "success": True}, "")
 
 @management.route("/api/management/users/list", methods=["GET"])
