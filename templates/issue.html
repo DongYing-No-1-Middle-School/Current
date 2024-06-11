@@ -152,7 +152,7 @@
       <div id="operation-button-bar">
         <button
           data-href="/issue/{{ issue_id }}/create"
-          data-with-permission="entries.create"
+          data-with-permission="entries.create.{{ issue_id }}"
           class="hidden px-3 py-1.5 rounded text-white bg-indigo-600"
         >
           <i class="icon-ic_fluent_add_circle_24_regular"></i>
@@ -326,8 +326,8 @@
                   data-with-permission="entries.remove.${
                     window.issue_id
                   }"
-                  data-preremove-uuid="${entry.uuid}"
-                  class="px-3 py-1.5 rounded hover:bg-gray-100"
+                  data-remove-uuid="${entry.uuid}"
+                  class="hidden px-3 py-1.5 rounded hover:bg-gray-100"
                 >
                   删除
                 </button>
@@ -474,7 +474,7 @@
           });
       });
       var processRemoveButton = () => {
-        document.querySelectorAll("[data-preremove-uuid]").forEach((e) => {
+        document.querySelectorAll("[data-remove-uuid]").forEach((e) => {
           e.addEventListener("click", (event) => {
             var uuid = event.target.getAttribute("data-remove-uuid");
             axios
