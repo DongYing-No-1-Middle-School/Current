@@ -320,7 +320,16 @@
                   data-href="/api/entries/getasset/${entry.uuid}"
                   class="px-3 py-1.5 rounded hover:bg-gray-100"
                 >
-                  下载
+                  <i class="icon-ic_fluent_arrow_download_32_regular"></i>
+                </button>
+                <button
+                  data-with-permission="entries.remove.${
+                    window.issue_id
+                  }"
+                  data-remove-uuid="${entry.uuid}"
+                  class="px-3 py-1.5 rounded hover:bg-gray-100"
+                >
+                  <i class="icon-ic_fluent_delete_32_regular"></i>
                 </button>
                 <button
                   data-review-uuid="${entry.uuid}"
@@ -373,6 +382,7 @@
             });
             processDataHref();
             processPermission();
+            processRemoveButton();
             processReviewButton();
             processSelectButton();
           } else {
@@ -463,6 +473,35 @@
             }
           });
       });
+      var processRemoveButton = () => {
+        document.querySelectorAll("[data-remove-uuid]").forEach((e) => {
+          e.addEventListener("click", (event) => {
+            var uuid = event.target.getAttribute("data-remove-uuid");
+            axios
+              .post(
+                `/api/entries/remove/${uuid}`,
+                {},
+                {
+                  headers: {
+                    Authorization: token,
+                  },
+                }
+              )
+              .then((result) => {
+                var data = result.data;
+                console.log(data);
+                if (data.code === 200) {
+                  sendToast.success("稿件删除成功！");
+                  setTimeout(() => {
+                    location.reload();
+                  }, 1000);
+                } else {
+                  sendToast.error(data.message);
+                }
+              });
+          });
+        });
+      };
       var processReviewButton = () => {
         document.querySelectorAll("[data-review-uuid]").forEach((e) => {
           e.addEventListener("click", (event) => {
@@ -534,9 +573,6 @@
           sendToast.success("所有稿件下载成功！");
         });
       }
-
-      // Usage:
-      // downloadAllEntries(entries);
       document
         .querySelector("button#download-all")
         .addEventListener("click", () => {

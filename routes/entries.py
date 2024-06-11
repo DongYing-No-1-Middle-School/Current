@@ -306,6 +306,46 @@ def getasset(entry_uuid):
     return send_file(
         f"uploads/{entry_uuid}", as_attachment=True, download_name=entry[2]
     )
+    
+
+@entries.route("/api/entries/remove/<entry_uuid>", methods=["POST"])
+def remove(entry_uuid):
+    """Remove an entry"""
+    try:
+        token = request.headers["Authorization"]
+    except KeyError:
+        return {"code": 400, "success": False, "message": "Bad request."}
+    conn = sqlite3.connect("current.db")
+    c = conn.cursor()
+    c.execute(
+        "select * from entries where uuid = ?",
+        (entry_uuid,),
+    )
+    entry = c.fetchone()
+    if not entry:
+        conn.close()
+        return {"code": 404, "success": False, "message": "Entry not found."}
+    issue_id = entry[1]
+    if not permissions.has_permission(
+        sessions.get_user(token), f"entries.remove.{issue_id}"
+    ):
+        return {
+            "code": 403,
+            "success": False,
+            "message": f"Access denied by permission controller: IsGranted(entries.remove.{issue_id})",
+        }
+    c.execute(
+        "delete from entries where uuid = ?",
+        (entry_uuid,),
+    )
+    conn.commit()
+    conn.close()
+    auditlog.log(
+        "entries.remove",
+        sessions.get_user(token),
+        f"Entry {entry_uuid} removed.",
+    )
+    return {"code": 200, "success": True, "message": "Entry removed."}
 
 
 @entries.route("/api/entries/select/<entry_uuid>", methods=["POST"])
