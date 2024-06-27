@@ -174,10 +174,15 @@
       });
     </script>
     <script>
+      document.getElementById("pdf").value = null;
       var submitForm = (event) => {
         event.preventDefault();
         const form = document.querySelector('form');
         const formData = new FormData(form);
+        console.log(formData);
+        if(document.getElementById("pdf").value === "") {
+          formData.delete('pdf');
+        }
         const xhr = new XMLHttpRequest();
         xhr.open(form.method, form.action);
         xhr.onload = () => {
