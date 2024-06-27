@@ -13,8 +13,7 @@ permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)
 
 
-VersionNumber = "1.0.1"
-VersionVCS = "fdfqef"
+VersionNumber = "1.0.2"
 
 
 @webpage.route("/")
