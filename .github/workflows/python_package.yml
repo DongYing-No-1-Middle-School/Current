@@ -50,7 +50,7 @@ jobs:
         find . -name "__pycache__" -type d -exec rm -r {} +
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
           name: compiled-package-${{ matrix.python-version }}
           path: .
