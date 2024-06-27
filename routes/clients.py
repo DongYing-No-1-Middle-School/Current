@@ -115,10 +115,10 @@ def changepass():
     if not users.verify(username, oldpass):
         return {"code": 401, "success": False, "message": "Wrong old password."}
     users.update(username, passwd=newpass)
-    sessions.purge_user(username)
     auditlog.log(
         "clients.changepass",
         sessions.get_user(username),
         f"Password changed for {username}",
     )
+    sessions.purge_user(username)
     return {"code": 200, "success": True}
