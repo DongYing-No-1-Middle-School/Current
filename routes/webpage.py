@@ -11,6 +11,7 @@ users = orion.Users(oriondb, ["grade", "classnum"])
 session = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)
+configuration = orion.Configuration(oriondb)
 
 
 VersionNumber = "1.0.2"

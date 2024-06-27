@@ -38,6 +38,7 @@ def index():
             session = orion.Sessions(oriondb)
             permissions = orion.Permissions(oriondb)
             auditlog = orion.AuditLog(oriondb)
+            configuration = orion.Configuration(oriondb)
             conn = sqlite3.connect("current.db")
             c = conn.cursor()
             c.execute(

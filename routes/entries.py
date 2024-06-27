@@ -15,6 +15,7 @@ users = orion.Users(oriondb, ["grade", "classnum"])
 sessions = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)
+configuration = orion.Configuration(oriondb)
 
 
 @entries.route("/api/entries/create", methods=["POST"])

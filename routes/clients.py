@@ -1,6 +1,6 @@
 """Route of clients (login, sessions...)."""
 
-from flask import Blueprint, current_app, request
+from flask import Blueprint, current_app, request, send_file
 
 import orion
 
@@ -11,6 +11,7 @@ users = orion.Users(oriondb, ["grade", "classnum"])
 sessions = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)
+configuration = orion.Configuration(oriondb)
 
 
 @clients.route("/api/clients/login", methods=["POST"])
@@ -30,10 +31,10 @@ def login():
     state = users.verify(username, password)
     if state:
         token = sessions.create(username)
-        auditlog.log("clients.login", sessions.get_user(token), f"New login session.")
+        auditlog.log("clients.login", sessions.get_user(token), "New login session.")
         return {"code": 200, "success": True, "data": {"token": token}}
     else:
-        auditlog.log("clients.login", username, f"Failed login attempt.")
+        auditlog.log("clients.login", username, "Failed login attempt.")
         return {"code": 401, "success": False, "message": "Wrong username or password."}
 
 
@@ -122,3 +123,43 @@ def changepass():
     )
     sessions.purge_user(username)
     return {"code": 200, "success": True}
+
+
+@clients.route("/api/clients/getannouncement", methods=["GET"])
+def getannouncement():
+    """Get announcement"""
+    try:
+        token = request.headers["Authorization"]
+    except KeyError:
+        return {"code": 400, "success": False, "message": "Bad request."}
+    username = sessions.get_user(token)
+    if not username:
+        return {"code": 401, "success": False, "message": "Invalid token."}
+    if configuration.get("site.announcementpdf", default="") != "":
+        show_pdf = True
+    else:
+        show_pdf = False
+    return {
+        "code": 200,
+        "success": True,
+        "data": {
+            "content": configuration.get("site.announcement", default="站点公告可在管理面板修改。"),
+            "show_pdf": show_pdf,
+        }
+    }
+
+
+@clients.route("/api/clients/getannouncementpdf", methods=["GET"])
+def getannouncementpdf():
+    """Get announcement pdf"""
+    try:
+        token = request.args["token"]
+    except KeyError:
+        return {"code": 400, "success": False, "message": "Bad request."}
+    username = sessions.get_user(token)
+    if not username:
+        return {"code": 401, "success": False, "message": "Invalid token."}
+    return send_file(
+        f"uploads/{configuration.get('site.announcementpdf', default='404.pdf')}",
+        as_attachment=False,
+    )

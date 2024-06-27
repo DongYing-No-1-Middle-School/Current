@@ -14,6 +14,7 @@ users = orion.Users(oriondb, ["grade", "classnum"])
 sessions = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)
+configuration = orion.Configuration(oriondb)
 
 def get_sudo_user(token):
     """Check if user has sudo mode enabled"""
@@ -121,6 +122,24 @@ def sudo_logout():
     conn.commit()
     conn.close()
     return make_token_response({"code": 200, "success": True}, "")
+
+@management.route("/api/management/announcement/update", methods=["POST"])
+def update_announcement():
+    """Update announcement"""
+    try:
+        token = request.cookies["sudo_token"]
+        content = request.form["content"]
+    except KeyError:
+        return {"code": 400, "success": False, "message": "Bad request."}
+    auditlog.log("management", get_sudo_user(token)[1], "Updated announcement.")
+    configuration.update("site.announcement", content.replace("\n", "<br>"))
+    try:
+        pdf = request.files["pdf"]
+        pdf.save(f"uploads/{pdf.filename}")
+        configuration.update("site.announcementpdf", pdf.filename)
+    except KeyError:
+        configuration.update("site.announcementpdf", "")
+    return {"code": 200, "success": True}
 
 @management.route("/api/management/users/list", methods=["GET"])
 def list_users():
