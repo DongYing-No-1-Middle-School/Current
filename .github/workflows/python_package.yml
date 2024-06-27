@@ -27,6 +27,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Cache pip packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
     - name: Compile Python files
       run: python -m compileall -b .
 
@@ -36,11 +44,13 @@ jobs:
         rm -rf .idea/
         rm .gitignore LICENSE package.json package-lock.json tailwind.config.js tailwind.sh
 
-    - name: Create a zip package
-      run: zip -r package.zip .
+    - name: Remove .py files and __pycache__ directories
+      run: |
+        find . -name "*.py" -type f -delete
+        find . -name "__pycache__" -type d -exec rm -r {} +
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: compiled-package-${{ matrix.python-version }}
-        path: package.zip
+          name: compiled-package-${{ matrix.python-version }}
+          path: .
