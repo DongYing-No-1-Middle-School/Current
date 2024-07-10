@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html class="h-full">
   <head>
+    <script>
+      window.issue_id = {{ issue_id }}
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Current | 第 {{ issue_id }} 期</title>
@@ -13,13 +16,15 @@
       href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Regular.css"
       rel="stylesheet"
     />
+    <link
+      href="/static/fluent-dialog@1.0.0/index.css"
+      rel="stylesheet"
+    />
     <script src="/static/axois@1.7.2/axios.min.js"></script>
     <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
     <script src="/static/toast-js@1.0.0/toast.min.js"></script>
+    <script src="/static/fluent-dialog@1.0.0/index.js"></script>
     <script src="/static/current@1.0.2/index.js"></script>
-    <script>
-      window.issue_id = {{ issue_id }}
-    </script>
     <script src="/static/jszip@3.10.1/jszip.min.js"></script>
     <script src="/static/filesaver@2.0.4/FileSaver.min.js"></script>
   </head>
@@ -477,28 +482,43 @@
         document.querySelectorAll("[data-remove-uuid]").forEach((e) => {
           e.addEventListener("click", (event) => {
             var uuid = event.target.getAttribute("data-remove-uuid");
-            axios
-              .post(
-                `/api/entries/remove/${uuid}`,
-                {},
-                {
-                  headers: {
-                    Authorization: token,
-                  },
+            window.remove_uuid = uuid;
+            openDialog(`<p>确认要删除此稿件？</p><p class="font-bold">注意：此操作不可恢复！</p>`, [
+              {
+                "text": "确认删除",
+                "onclick": () => {
+                  axios
+                    .post(
+                      `/api/entries/remove/${uuid}`,
+                      {},
+                      {
+                        headers: {
+                          Authorization: token,
+                        },
+                      }
+                    )
+                    .then((result) => {
+                      var data = result.data;
+                      console.log(data);
+                      if (data.code === 200) {
+                        sendToast.success("稿件删除成功！");
+                        setTimeout(() => {
+                          location.reload();
+                        }, 1000);
+                      } else {
+                        sendToast.error(data.message);
+                      }
+                    });
+                  hideDialogElement();
                 }
-              )
-              .then((result) => {
-                var data = result.data;
-                console.log(data);
-                if (data.code === 200) {
-                  sendToast.success("稿件删除成功！");
-                  setTimeout(() => {
-                    location.reload();
-                  }, 1000);
-                } else {
-                  sendToast.error(data.message);
+              },
+              {
+                "text": "取消",
+                "onclick": () => {
+                  hideDialogElement();
                 }
-              });
+              }
+            ], allowClose = false);
           });
         });
       };
