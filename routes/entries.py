@@ -18,6 +18,21 @@ auditlog = orion.AuditLog(oriondb)
 configuration = orion.Configuration(oriondb)
 
 
+def count_entries(allentries) -> list:
+    """Count the status of all entries"""
+    entries_cnt = []
+    for i in range(4):
+        entries_cnt.append({
+            "pending": 0,
+            "created": 0,
+            "reviewed": 0,
+            "selected": 0,
+        })
+    for entry in allentries:
+        entries_cnt[entry[3] - 1][entry[10]] += 1
+    return entries_cnt
+
+
 @entries.route("/api/entries/create", methods=["POST"])
 def create():
     """Create an entry"""
@@ -54,22 +69,23 @@ def create():
     elif issue[8]:
         conn.close()
         return {"code": 400, "success": False, "message": "Issue is published."}
+    entry_data = {
+        "uuid": entry_uuid,
+        "issue_id": issue_id,
+        "filename": "",
+        "page": page,
+        "title": title,
+        "origin": origin,
+        "wordcount": wordcount,
+        "description": description,
+        "selector": sessions.get_user(token),
+        "reviewer": "",
+        "status": "pending",
+    }
     c.execute(
         """insert into entries (uuid, issue_id, filename, page, title, origin, wordcount, description, selector, reviewer, status)
         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""",
-        (
-            entry_uuid,
-            issue_id,
-            "",
-            page,
-            title,
-            origin,
-            wordcount,
-            description,
-            sessions.get_user(token),
-            "",
-            "pending",
-        ),
+        tuple(entry_data.values()),
     )
     c.close()
     conn.commit()
@@ -80,19 +96,7 @@ def create():
     return {
         "code": 200,
         "success": True,
-        "data": {
-            "uuid": entry_uuid,
-            "issue_id": issue_id,
-            "filename": "",
-            "page": page,
-            "title": title,
-            "origin": origin,
-            "wordcount": wordcount,
-            "description": description,
-            "selector": sessions.get_user(token),
-            "reviewer": "",
-            "status": "pending",
-        },
+        "data": entry_data,
     }
 
 
@@ -172,35 +176,10 @@ def listissue(issue_id):
     c.execute("select * from entries where issue_id = ?", (issue_id,))
     allentries = c.fetchall()
     conn.close()
-    res = []
-    entries_cnt = [
-        {
-            "pending": 0,
-            "created": 0,
-            "reviewed": 0,
-            "selected": 0,
-        },
-        {
-            "pending": 0,
-            "created": 0,
-            "reviewed": 0,
-            "selected": 0,
-        },
-        {
-            "pending": 0,
-            "created": 0,
-            "reviewed": 0,
-            "selected": 0,
-        },
-        {
-            "pending": 0,
-            "created": 0,
-            "reviewed": 0,
-            "selected": 0,
-        },
-    ]
+    entries_list = []
+    entries_cnt = count_entries(allentries)
     for entry in allentries:
-        res.append(
+        entries_list.append(
             {
                 "uuid": entry[0],
                 "issue_id": entry[1],
@@ -215,12 +194,11 @@ def listissue(issue_id):
                 "status": entry[10],
             }
         )
-        entries_cnt[entry[3] - 1][entry[10]] += 1
     return {
         "code": 200,
         "success": True,
         "data": {
-            "list": res,
+            "list": entries_list,
             "count": entries_cnt,
         },
     }
@@ -308,7 +286,7 @@ def getasset(entry_uuid):
     return send_file(
         f"uploads/{entry_uuid}", as_attachment=True, download_name=entry[2]
     )
-    
+
 
 @entries.route("/api/entries/remove/<entry_uuid>", methods=["POST"])
 def remove(entry_uuid):
