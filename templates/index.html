@@ -27,6 +27,22 @@
     <script src="/static/tourguidejs@0.0.16/tour.min.js"></script>
     <script src="/static/fluent-dialog@1.0.0/index.js"></script>
     <script src="/static/current@1.0.2/index.js"></script>
+    <script
+      src="https://js.sentry-cdn.com/a947a58403328f3fe3be75a35f07b057.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      Sentry.init({
+        dsn: "https://c0ac450ba612d797f59ace18ff17a503@o4507605506260992.ingest.us.sentry.io/4507605509341184",
+        beforeSend(event, hint) {
+          // Check if it is an exception, and if so, show the report dialog
+          if (event.exception && event.event_id) {
+            Sentry.showReportDialog({ eventId: event.event_id });
+          }
+          return event;
+        },
+      });
+    </script>    
   </head>
   <body class="flex flex-col h-full bg-[#fafafa]">
     <header class="flex-grow-0 px-5 pb-2 bg-white border-b-2">
