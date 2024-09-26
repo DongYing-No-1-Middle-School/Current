@@ -10,7 +10,7 @@ import orion
 management = Blueprint("management", __name__, template_folder="templates")
 
 oriondb = current_app.config["oriondb"]
-users = orion.Users(oriondb, ["grade", "classnum"])
+users = orion.Users(oriondb, ["grade", "classnum", "active"])
 sessions = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)

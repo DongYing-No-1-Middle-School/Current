@@ -7,7 +7,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Current | 第 {{ issue_id }} 期</title>
-    <link href="/static/current@1.0.2/index.css" rel="stylesheet" />
+    <link href="/static/current@1.0.4/index.css" rel="stylesheet" />
     <link
       href="/static/fluent-system-icons@1.1.240/FluentSystemIcons-Filled.css"
       rel="stylesheet"
@@ -24,7 +24,7 @@
     <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
     <script src="/static/toast-js@1.0.0/toast.min.js"></script>
     <script src="/static/fluent-dialog@1.0.0/index.js"></script>
-    <script src="/static/current@1.0.2/index.js"></script>
+    <script src="/static/current@1.0.4/index.js"></script>
     <script src="/static/jszip@3.10.1/jszip.min.js"></script>
     <script src="/static/filesaver@2.0.4/FileSaver.min.js"></script>
     <script
@@ -62,6 +62,19 @@
       </div>
     </header>
     <main class="flex-grow mt-4 mx-10 lg:mx-[20%]">
+      <div id="not-active-box" class="hidden rounded-md bg-blue-50 p-4 mb-5">
+        <div class="flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <div class="ml-3 flex-1">
+            <div class="text-blue-700">您无需为此期刊投稿。</div>
+            <div class="text-sm text-blue-500">管理员已将您标记为未活跃。</div>
+          </div>
+        </div>
+      </div>
       <div
         id="dashboard-container"
         class="bg-white rounded-lg border shadow p-10 mb-3"
@@ -92,7 +105,7 @@
           <div data-statical-render="4" class="flex flex-row mt-1 h-6"></div>
         </div>
       </div>
-      <div
+      <!-- <div
         id="cooperator-container"
         class="bg-white rounded-lg border shadow p-10 mb-3"
       >
@@ -113,7 +126,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div
         id="publish"
         data-with-permission="issues.publish"
@@ -214,522 +227,27 @@
         e.innerText = window.issue_id;
       });
     </script>
+    <script src="/static/current@1.0.4/issue/entries_render.js"></script>
+    <!-- <script src="/static/current@1.0.4/issue/authors_render.js"></script> -->
+    <script src="/static/current@1.0.4/issue/entries_operations.js"></script>
+    <script src="/static/current@1.0.4/issue/download_all.js"></script>
+    <script src="/static/current@1.0.4/issue/releases_functions.js"></script>
     <script>
-      var token = Cookies.get("token");
-      axios
-        .get(`/api/entries/listissue/${window.issue_id}`, {
-          headers: {
-            Authorization: token,
-          },
-        })
-        .then((result) => {
-          var data = result.data;
-          console.log(data);
-          if (data.code === 200) {
-            // Render statical data
-            var statical = data.data.count;
-            var created_total = 0;
-            var reviewed_total = 0;
-            var selected_total = 0;
-            for (let i = 0; i < statical.length; i++) {
-              var dom = document.querySelector(
-                `[data-statical-render="${i + 1}"]`
-              );
-              var pending_dom = document.createElement("span");
-              pending_dom.classList.add(
-                "h-5",
-                "w-2",
-                "rounded",
-                "shadow",
-                "bg-gray-300",
-                "mr-1"
-              );
-              var created_dom = document.createElement("span");
-              created_dom.classList.add(
-                "h-5",
-                "w-2",
-                "rounded",
-                "shadow",
-                "bg-green-200",
-                "mr-1"
-              );
-              var reviewed_dom = document.createElement("span");
-              reviewed_dom.classList.add(
-                "h-5",
-                "w-2",
-                "rounded",
-                "shadow",
-                "bg-green-500",
-                "mr-1"
-              );
-              var selected_dom = document.createElement("span");
-              selected_dom.classList.add(
-                "h-5",
-                "w-2",
-                "rounded",
-                "shadow",
-                "bg-blue-600",
-                "mr-1"
-              );
-              for (let j = 0; j < statical[i].selected; j++) {
-                dom.appendChild(selected_dom.cloneNode());
-              }
-              for (let j = 0; j < statical[i].reviewed; j++) {
-                dom.appendChild(reviewed_dom.cloneNode());
-              }
-              for (let j = 0; j < statical[i].created; j++) {
-                dom.appendChild(created_dom.cloneNode());
-              }
-              for (let j = 0; j < statical[i].pending; j++) {
-                dom.appendChild(pending_dom.cloneNode());
-              }
-              created_total += statical[i].created;
-              reviewed_total += statical[i].reviewed;
-              selected_total += statical[i].selected;
-            }
-            document.querySelector("#created-total").innerText = created_total;
-            document.querySelector("#reviewed-total").innerText =
-              reviewed_total;
-            document.querySelector("#selected-total").innerText =
-              selected_total;
-            // Render entries
-            var entries = data.data.list;
-            var icon_type = {
-              created: "icon-ic_fluent_circle_32_regular text-blue-400",
-              reviewed:
-                "icon-ic_fluent_checkmark_circle_32_regular text-green-400",
-              selected: "icon-ic_fluent_merge_24_regular text-blue-600",
-            };
-            var page_dom = [
-              document.querySelector("#page-1-container"),
-              document.querySelector("#page-2-container"),
-              document.querySelector("#page-3-container"),
-              document.querySelector("#page-4-container"),
-            ];
-            entries.forEach((entry) => {
-              var entry_template = `
-              <div class="mr-3">
-                <i
-                  class="${icon_type[entry.status]} text-xl"
-                ></i>
-              </div>
-              <div class="flex-1 flex-col">
-                <h2 class="font-bold text-lg">${entry.title}</h2>
-                <p><span class="font-bold">来源：</span>${entry.origin}</p>
-                <p><span class="font-bold">词数：</span>${entry.wordcount}</p>
-                <p><span class="font-bold">描述：</span></p>
-                <p>${entry.description}</p>
-                <p><span class="font-bold">选稿人：</span>${entry.selector}</p>
-                <p><span class="font-bold">审稿人：</span>${entry.reviewer}</p>
-              </div>
-              <div data-with-permission="entries.review.${
-                window.issue_id
-              }" class="hidden">
-                <button
-                  data-href="/api/entries/getasset/${entry.uuid}"
-                  class="px-3 py-1.5 rounded hover:bg-gray-100"
-                >
-                  下载
-                </button>
-                <button
-                  data-with-permission="entries.remove.${
-                    window.issue_id
-                  }"
-                  data-remove-uuid="${entry.uuid}"
-                  class="hidden px-3 py-1.5 rounded hover:bg-gray-100"
-                >
-                  删除
-                </button>
-                <button
-                  data-review-uuid="${entry.uuid}"
-                  class="px-3 py-1.5 rounded hover:bg-gray-100"
-                >
-                  审稿
-                </button>
-              </div>
-              <div data-with-permission="entries.select.${
-                window.issue_id
-              }" class="hidden">
-                <button
-                  data-select-uuid="${entry.uuid}"
-                  class="px-3 py-1.5 rounded hover:bg-gray-100"
-                >
-                  选录
-                </button>
-              </div>
-              `;
-              var entryItem = document.createElement("div");
-              entryItem.innerHTML = entry_template;
-              entryItem.classList.add(
-                "flex",
-                "flex-col",
-                "lg:flex-row",
-                "flex-nowrap",
-                "bg-white",
-                "rounded-lg",
-                "border",
-                "shadow",
-                "mb-3",
-                "p-5",
-                "w-full"
-              );
-              if (entry.status === "created" || entry.status === "pending") {
-                entryItem
-                  .querySelector("[data-select-uuid]")
-                  .classList.add("hidden");
-              } else if (entry.status === "reviewed") {
-                entryItem.querySelector("[data-review-uuid]").innerText =
-                  "重新审核";
-              } else if (entry.status === "selected") {
-                entryItem
-                  .querySelector("[data-review-uuid]")
-                  .classList.add("hidden");
-                entryItem.querySelector("[data-select-uuid]").innerText =
-                  "取消选录";
-              }
-              page_dom[entry.page - 1].appendChild(entryItem);
-            });
-            processDataHref();
-            processPermission();
-            processRemoveButton();
-            processReviewButton();
-            processSelectButton();
-          } else {
-            sendToast.error(data.message);
-          }
-        });
-    </script>
-    <script>
-      var token = Cookies.get("token");
-      axios
-        .get(`/api/issues/info/${window.issue_id}`, {
-          headers: {
-            Authorization: token,
-          },
-        })
-        .then((result) => {
-          var data = result.data;
-          console.log(data);
-          if (data.code === 200) {
-            var leader = data.data.leader;
-            var editors = data.data.editors;
-            var respeditor = data.data.respeditor;
-            var leader_dom = document.querySelector("#leader-container");
-            var editors_dom = document.querySelector("#editors-container");
-            var respeditor_dom = document.querySelector(
-              "#respeditor-container"
-            );
-            var li = document.createElement("li");
-            li.classList.add("flex", "items-center", "mr-2");
-            li.innerText = leader;
-            leader_dom.appendChild(li);
-            editors.forEach((e) => {
-              var li = document.createElement("li");
-              li.classList.add("flex", "items-center", "mr-2");
-              li.innerText = e;
-              editors_dom.appendChild(li);
-            });
-            var li = document.createElement("li");
-            li.classList.add("flex", "items-center", "mr-2");
-            li.innerText = respeditor;
-            respeditor_dom.appendChild(li);
-            document.querySelector("#page-2-subject").innerText =
-              data.data.subject[0];
-            document.querySelector("#page-3-subject").innerText =
-              data.data.subject[1];
-            document.querySelector("#page-4-subject").innerText =
-              data.data.subject[2];
-          } else {
-            sendToast.error(data.message);
-          }
-        });
-    </script>
-    <script>
-      window.review_uuid = null;
-      var review_files = document.querySelector("#review-files");
-      review_files.addEventListener("change", (event) => {
-        if (review_files.files.length === 0) {
-          return;
-        }
-        if (window.review_uuid == null) {
-          sendToast.error("Client error: review_uuid is null.");
-          return;
-        }
-        var uuid = window.review_uuid;
-        var file = event.target.files[0];
-        var formData = new FormData();
-        formData.append("file", file);
-        sendToast.info("正在上传文件...");
-        axios
-          .post(`/api/entries/review/${uuid}`, formData, {
-            headers: {
-              Authorization: token,
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((result) => {
-            var data = result.data;
-            console.log(data);
-            if (data.code === 200) {
-              sendToast.success("审核文件上传成功！");
-              event.target.files = null;
-              setTimeout(() => {
-                location.reload();
-              }, 1000);
-            } else {
-              event.target.files = null;
-              sendToast.error(data.message);
-            }
+      verifyUser(onsuccess = (userdetail) => {
+        if(userdetail.active == 0) {
+          document.querySelector("#not-active-box").classList.remove("hidden");
+          document.querySelector("#operation-button-bar").classList.add("hidden");
+          document.querySelectorAll("[data-review-uuid]").forEach((e) => {
+            e.classList.add("hidden");
           });
+          document.querySelectorAll("[data-remove-uuid]").forEach((e) => {
+            e.classList.add("hidden");
+          });
+          document.querySelectorAll("[data-select-uuid]").forEach((e) => {
+            e.classList.add("hidden");
+          });
+        }
       });
-      var processRemoveButton = () => {
-        document.querySelectorAll("[data-remove-uuid]").forEach((e) => {
-          e.addEventListener("click", (event) => {
-            var uuid = event.target.getAttribute("data-remove-uuid");
-            window.remove_uuid = uuid;
-            openDialog(`<p>确认要删除此稿件？</p><p class="font-bold">注意：此操作不可恢复！</p>`, [
-              {
-                "text": "确认删除",
-                "onclick": () => {
-                  axios
-                    .post(
-                      `/api/entries/remove/${uuid}`,
-                      {},
-                      {
-                        headers: {
-                          Authorization: token,
-                        },
-                      }
-                    )
-                    .then((result) => {
-                      var data = result.data;
-                      console.log(data);
-                      if (data.code === 200) {
-                        sendToast.success("稿件删除成功！");
-                        setTimeout(() => {
-                          location.reload();
-                        }, 1000);
-                      } else {
-                        sendToast.error(data.message);
-                      }
-                    });
-                  hideDialogElement();
-                }
-              },
-              {
-                "text": "取消",
-                "onclick": () => {
-                  hideDialogElement();
-                }
-              }
-            ], allowClose = false);
-          });
-        });
-      };
-      var processReviewButton = () => {
-        document.querySelectorAll("[data-review-uuid]").forEach((e) => {
-          e.addEventListener("click", (event) => {
-            var uuid = event.target.getAttribute("data-review-uuid");
-            var review_files = document.querySelector("#review-files");
-            window.review_uuid = uuid;
-            review_files.files = null;
-            sendToast.info("请选择审核并修改过后的文件，并上传。");
-            review_files.click();
-          });
-        });
-      };
-    </script>
-    <script>
-      var processSelectButton = () => {
-        document.querySelectorAll("[data-select-uuid]").forEach((e) => {
-          e.addEventListener("click", (event) => {
-            var uuid = event.target.getAttribute("data-select-uuid");
-            axios
-              .post(
-                `/api/entries/select/${uuid}`,
-                {},
-                {
-                  headers: {
-                    Authorization: token,
-                  },
-                }
-              )
-              .then((result) => {
-                var data = result.data;
-                console.log(data);
-                if (data.code === 200) {
-                  if (data.data.status === "selected") {
-                    sendToast.success("选录成功！");
-                    setTimeout(() => {
-                      location.reload();
-                    }, 1000);
-                  } else if (data.data.status === "reviewed") {
-                    sendToast.success("取消选录成功！");
-                    setTimeout(() => {
-                      location.reload();
-                    }, 1000);
-                  }
-                } else {
-                  sendToast.error(data.message);
-                }
-              });
-          });
-        });
-      };
-    </script>
-    <script>
-      async function downloadAllEntries(entries) {
-        const zip = new JSZip();
-
-        for (let entry of entries) {
-          const entryFolder = zip.folder(entry.title);
-          const response = await axios.get(
-            `/api/entries/getasset/${entry.uuid}`,
-            { responseType: "blob" }
-          );
-          entryFolder.file(`${entry.filename}`, response.data, {
-            binary: true,
-          });
-        }
-
-        zip.generateAsync({ type: "blob" }).then((blob) => {
-          saveAs(blob, `第 ${window.issue_id} 期的所有稿件 - Current.zip`);
-          sendToast.success("所有稿件下载成功！");
-        });
-      }
-      document
-        .querySelector("button#download-all")
-        .addEventListener("click", () => {
-          sendToast.info("正在下载所有稿件，请稍后...");
-          axios
-            .get(`/api/entries/listissue/${window.issue_id}`, {
-              headers: {
-                Authorization: token,
-              },
-            })
-            .then((result) => {
-              var data = result.data;
-              console.log(data);
-              if (data.code === 200) {
-                var entries = data.data.list;
-                downloadAllEntries(entries);
-              } else {
-                sendToast.error(data.message);
-              }
-            });
-        });
-    </script>
-    <script>
-      processPublishButton = () => {
-        document
-          .querySelector("#file-upload")
-          .addEventListener("change", (event) => {
-            var filename = event.target.files[0].name;
-            document.querySelector("#filename-show").innerText = filename;
-          });
-        document
-          .querySelector("#publish-issue")
-          .addEventListener("click", () => {
-            var file = document.querySelector("#file-upload").files[0];
-            if (file == null) {
-              sendToast.error("请先选择文件！");
-              return;
-            }
-            var formData = new FormData();
-            formData.append("pdf", file);
-            axios
-              .post(`/api/issues/publish/${window.issue_id}`, formData, {
-                headers: {
-                  Authorization: token,
-                  "Content-Type": "multipart/form-data",
-                },
-              })
-              .then((result) => {
-                var data = result.data;
-                console.log(data);
-                if (data.code === 200) {
-                  sendToast.success("发布成功！");
-                  setTimeout(() => {
-                    location.reload();
-                  }, 1000);
-                } else {
-                  sendToast.error(data.message);
-                }
-              });
-          });
-      };
-      var token = Cookies.get("token");
-      axios
-        .get(`/api/issues/info/${window.issue_id}`, {
-          headers: {
-            Authorization: token,
-          },
-        })
-        .then((result) => {
-          var data = result.data;
-          console.log(data);
-          if (data.code === 200) {
-            if (data.data.ispublished) {
-              document
-                .querySelector("#dashboard-container")
-                .classList.add("hidden");
-              document
-                .querySelector("#cooperator-container")
-                .classList.add("hidden");
-              document
-                .querySelector("#operation-button-bar")
-                .classList.add("hidden");
-              document
-                .querySelector("[data-with-permission='issues.publish']")
-                .remove();
-              var userAgent = navigator.userAgent.toLowerCase();
-              if (userAgent.includes("mobi") || userAgent.includes("android")) {
-                var pdfdiv = document.createElement("div");
-                pdfdiv.classList.add(
-                  "bg-white",
-                  "rounded-lg",
-                  "border",
-                  "shadow",
-                  "p-10",
-                  "mb-3"
-                );
-                var button = document.createElement("button");
-                button.classList.add(
-                  "px-3",
-                  "py-1.5",
-                  "rounded",
-                  "bg-indigo-600",
-                  "text-white",
-                  "hover:bg-indigo-500"
-                );
-                button.innerText = "下载 PDF";
-                button.addEventListener("click", () => {
-                  window.open(`/api/issues/getpdf/${window.issue_id}`);
-                });
-                pdfdiv.appendChild(button);
-                document.querySelector("#release-pdf-show").appendChild(pdfdiv);
-              } else {
-                var pdfiframe = document.createElement("iframe");
-                pdfiframe.src = `/api/issues/getpdf/${window.issue_id}`;
-                pdfiframe.classList.add(
-                  "mb-5",
-                  "w-full",
-                  "h-[65vh]",
-                  "shadow",
-                  "rounded"
-                );
-                document
-                  .querySelector("#release-pdf-show")
-                  .appendChild(pdfiframe);
-              }
-            } else {
-              document.querySelector("#release-pdf-show").remove();
-              processPublishButton();
-            }
-          } else {
-            sendToast.error(data.message);
-          }
-        });
     </script>
   </body>
 </html>

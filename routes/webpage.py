@@ -7,7 +7,7 @@ import orion
 webpage = Blueprint("webpage", __name__, template_folder="templates")
 
 oriondb = current_app.config["oriondb"]
-users = orion.Users(oriondb, ["grade", "classnum"])
+users = orion.Users(oriondb, ["grade", "classnum", "active"])
 session = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)

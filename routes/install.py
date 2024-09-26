@@ -34,7 +34,7 @@ def index():
             return {"code": 200, "success": True}
         if step == 2:
             global users, session, permissions
-            users = orion.Users(oriondb, ["grade", "classnum"])
+            users = orion.Users(oriondb, ["grade", "classnum", "active"])
             session = orion.Sessions(oriondb)
             permissions = orion.Permissions(oriondb)
             auditlog = orion.AuditLog(oriondb)

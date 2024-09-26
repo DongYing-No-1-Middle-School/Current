@@ -6,7 +6,7 @@ import orion
 scheduler = APScheduler()
 
 oriondb = current_app.config["oriondb"]
-users = orion.Users(oriondb, ["grade", "classnum"])
+users = orion.Users(oriondb, ["grade", "classnum", "active"])
 session = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
 

@@ -7,7 +7,7 @@ import orion
 clients = Blueprint("clients", __name__, template_folder="templates")
 
 oriondb = current_app.config["oriondb"]
-users = orion.Users(oriondb, ["grade", "classnum"])
+users = orion.Users(oriondb, ["grade", "classnum", "active"])
 sessions = orion.Sessions(oriondb)
 permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)
@@ -61,6 +61,7 @@ def status():
                 "username": username,
                 "grade": userdetail["grade"],
                 "classnum": userdetail["classnum"],
+                "active": userdetail["active"],
             },
         }
     return {"code": 401, "success": False, "message": "Invalid token."}
