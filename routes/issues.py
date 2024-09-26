@@ -30,7 +30,7 @@ def create():
         leader = request.json["leader"]
         editors = ",".join(request.json["editors"])
         respeditor = request.json["respeditor"]
-    except KeyError:
+    except KeyError as e:
         return {"code": 400, "success": False, "message": "Bad request."}
     if not permissions.has_permission(sessions.get_user(token), "issues.create"):
         return {

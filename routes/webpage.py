@@ -46,6 +46,12 @@ def settings():
     return render_template("settings.html", version_number=VersionNumber)
 
 
+@webpage.route("/issue/new")
+def newissue():
+    """Issue page."""
+    return render_template("newissue.html")
+
+
 @webpage.route("/issue/<int:issue_id>")
 def issue(issue_id):
     """Issue page."""
