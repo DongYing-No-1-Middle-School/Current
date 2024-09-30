@@ -1,6 +1,7 @@
 """Route of web pages."""
 
 from flask import Blueprint, current_app, render_template, send_file
+import requests
 
 import orion
 
@@ -14,7 +15,35 @@ auditlog = orion.AuditLog(oriondb)
 configuration = orion.Configuration(oriondb)
 
 
-VersionNumber = "1.0.2"
+VersionNumber = "1.0.4"
+
+"""Github Changelog Fetch"""
+GITHUB_USERNAME = "CodeZhangBorui"
+REPO_NAME = "Current"
+ACCESS_TOKEN = "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"
+url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{REPO_NAME}/commits"
+headers = {
+    "Authorization": f"Bearer {ACCESS_TOKEN}",
+    "Accept": "application/vnd.github.v3+json",
+}
+
+
+def fetch_commits():
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Error fetching commits: {response.status_code}")
+        return []
+
+
+def format_commit(commit):
+    sha = commit["sha"][:7]  # 获取前7位哈希
+    message = commit["commit"]["message"].split("\n")[0]  # 获取提交信息的第一行
+    date = commit["commit"]["committer"]["date"][
+        :10
+    ]  # 获取提交日期（格式：YYYY-MM-DD）
+    return f"<p>{sha} - {date} - {message}</p>"
 
 
 @webpage.route("/")
@@ -43,7 +72,9 @@ def draft():
 @webpage.route("/settings")
 def settings():
     """Personal settings page."""
-    return render_template("settings.html", version_number=VersionNumber)
+    commits = fetch_commits()
+    changelog = ''.join(format_commit(commit) for commit in commits)
+    return render_template("settings.html", version_number=VersionNumber, changelog=changelog)
 
 
 @webpage.route("/issue/new")
