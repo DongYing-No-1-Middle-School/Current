@@ -28,12 +28,12 @@
     <script src="/static/fluent-dialog@1.0.0/index.js"></script>
     <script src="/static/current@1.0.4/index.js"></script>
     <script
-      src="https://js.sentry-cdn.com/a947a58403328f3fe3be75a35f07b057.min.js"
+      src="{{ sentry_loader_script_url }}"
       crossorigin="anonymous"
     ></script>
     <script>
       Sentry.init({
-        dsn: "https://c0ac450ba612d797f59ace18ff17a503@o4507605506260992.ingest.us.sentry.io/4507605509341184",
+        dsn: "{{ sentry_dsn }}",
         beforeSend(event, hint) {
           // Check if it is an exception, and if so, show the report dialog
           if (event.exception && event.event_id) {

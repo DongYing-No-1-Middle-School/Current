@@ -27,7 +27,8 @@ def index():
                 },
                 "sentry": {
                     "enabled": False,
-                    "dsn": ""
+                    "dsn": "",
+                    "loader_script_url": ""
                 }
             }
             with open("config.json", "w") as f:

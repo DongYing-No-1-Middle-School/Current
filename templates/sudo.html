@@ -17,9 +17,21 @@
     <script src="/static/js-cookie@3.0.5/js.cookie.min.js"></script>
     <script src="/static/current@1.0.4/index.js"></script>
     <script
-      src="https://js.sentry-cdn.com/a947a58403328f3fe3be75a35f07b057.min.js"
+      src="{{ sentry_loader_script_url }}"
       crossorigin="anonymous"
     ></script>
+    <script>
+      Sentry.init({
+        dsn: "{{ sentry_dsn }}",
+        beforeSend(event, hint) {
+          // Check if it is an exception, and if so, show the report dialog
+          if (event.exception && event.event_id) {
+            Sentry.showReportDialog({ eventId: event.event_id });
+          }
+          return event;
+        },
+      });
+    </script>  
   </head>
   <body
     class="w-full h-full px-10 lg:px-[20%] py-10 bg-gray-800 text-gray-50 font-mono text-xl"

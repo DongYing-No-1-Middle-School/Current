@@ -34,6 +34,20 @@ app.secret_key = os.urandom(24)
 oriondb = config["oriondb"]["path"]
 app.config["oriondb"] = oriondb
 
+# Initalize Sentry
+if config["sentry"]["enabled"]:
+    sentry_sdk.init(
+        dsn=config["sentry"]["dsn"],
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        traces_sample_rate=1.0,
+        # Set profiles_sample_rate to 1.0 to profile 100%
+        # of sampled transactions.
+        # We recommend adjusting this value in production.
+        profiles_sample_rate=1.0,
+    )
+    app.config["sentry_loader_script_url"] = config["sentry"]["loader_script_url"]
+
 # Push context
 app.app_context().push()
 
@@ -48,19 +62,6 @@ from routes.entries import entries
 app.register_blueprint(entries)
 from routes.management import management
 app.register_blueprint(management)
-
-# Initalize Sentry
-if config["sentry"]["enabled"]:
-    sentry_sdk.init(
-        dsn=config["sentry"]["dsn"],
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        traces_sample_rate=1.0,
-        # Set profiles_sample_rate to 1.0 to profile 100%
-        # of sampled transactions.
-        # We recommend adjusting this value in production.
-        profiles_sample_rate=1.0,
-    )
 
 # Register scheduler
 import crontask
