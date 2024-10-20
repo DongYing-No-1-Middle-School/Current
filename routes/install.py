@@ -25,6 +25,10 @@ def index():
                 "flask": {
                     "debug": False,
                 },
+                "sentry": {
+                    "enabled": False,
+                    "dsn": ""
+                }
             }
             with open("config.json", "w") as f:
                 f.write(json.dumps(config_template, indent=4))

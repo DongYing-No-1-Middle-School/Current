@@ -18,12 +18,12 @@ configuration = orion.Configuration(oriondb)
 VersionNumber = "1.0.4"
 
 """Github Changelog Fetch"""
-GITHUB_USERNAME = "CodeZhangBorui"
+GITHUB_USERNAME = "DongYing-No-1-Middle-School"
 REPO_NAME = "Current"
-ACCESS_TOKEN = "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"
+# ACCESS_TOKEN = ""
 url = f"https://api.github.com/repos/{GITHUB_USERNAME}/{REPO_NAME}/commits"
 headers = {
-    "Authorization": f"Bearer {ACCESS_TOKEN}",
+    # "Authorization": f"Bearer {ACCESS_TOKEN}",
     "Accept": "application/vnd.github.v3+json",
 }
 
