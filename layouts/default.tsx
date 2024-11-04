@@ -42,8 +42,8 @@ export default function DefaultLayout({
           >
             <span className="text-primary">Dongying No.1 Middle School</span>
           </Link>
-          , Licensed Under Apache License 2.0
         </p>
+        <p>Licensed Under Apache License 2.0</p>
       </footer>
     </div>
   );
