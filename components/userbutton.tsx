@@ -73,7 +73,7 @@ export default function UserButton() {
           });
         }
       })
-      .catch((err) => {
+      .catch(() => {
         setIsLoading(false);
         setPassword({
           value: password.value,
@@ -134,7 +134,12 @@ export default function UserButton() {
                   关闭
                 </Button>
                 {isLoading ? (
-                  <Button color="primary" type="submit" onPress={handleLogin} isLoading>
+                  <Button
+                    isLoading
+                    color="primary"
+                    type="submit"
+                    onPress={handleLogin}
+                  >
                     登录
                   </Button>
                 ) : (
