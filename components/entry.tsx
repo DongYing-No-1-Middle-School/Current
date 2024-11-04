@@ -10,7 +10,7 @@ import {
   FileCheck2 as FileCheckIcon,
   Boxes as BoxesIcon,
 } from "lucide-react";
-import { useSnackbar } from "notistack";
+import { closeSnackbar, useSnackbar } from "notistack";
 import React from "react";
 import { Cookies } from "react-cookie";
 import axios from "axios";
@@ -71,7 +71,10 @@ export default function IssueEntry({ bare_entry }: IssueEntryProps) {
 
     formData.append("file", file);
 
-    enqueueSnackbar("正在上传文件", { variant: "info" });
+    const snackbarId = enqueueSnackbar("正在上传，请不要关闭页面……", {
+      persist: true,
+    });
+
     axios
       .post(`/api/entries/review/${entry.uuid}`, formData, {
         headers: {
@@ -92,11 +95,13 @@ export default function IssueEntry({ bare_entry }: IssueEntryProps) {
             variant: "error",
           });
         }
+        closeSnackbar(snackbarId);
       })
       .catch(() => {
         enqueueSnackbar("文件上传失败：网络错误。", {
           variant: "error",
         });
+        closeSnackbar(snackbarId);
       });
   };
 
@@ -287,7 +292,7 @@ export default function IssueEntry({ bare_entry }: IssueEntryProps) {
               ) : null}
               {hasPermission(userdata.permission, `entries.select.*`) &&
               entry.status === "selected" ? (
-                <Button onClick={handleSelectClick} color="success">
+                <Button color="success" onClick={handleSelectClick}>
                   <BoxesIcon />
                   选录
                 </Button>
@@ -296,6 +301,7 @@ export default function IssueEntry({ bare_entry }: IssueEntryProps) {
           </CardFooter>
           <input
             ref={fileInputRef}
+            accept=".doc,.docx"
             className="hidden"
             id="review-files"
             type="file"
