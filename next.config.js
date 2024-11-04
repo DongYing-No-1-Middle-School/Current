@@ -5,7 +5,7 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'https://current.yzxgg.xyz/api/:path*', // 代理到目标地址
+        destination: 'http://localhost:5000/api/:path*', // 代理到目标地址
       },
     ];
   },

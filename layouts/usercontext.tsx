@@ -11,8 +11,8 @@ interface Userdata {
 interface UserContextProps {
   userdata: Userdata;
   setUserdata: React.Dispatch<React.SetStateAction<Userdata>>;
-  permission: any;
-  setPermission: React.Dispatch<React.SetStateAction<any>>;
+  permission: String[];
+  setPermission: React.Dispatch<React.SetStateAction<String[]>>;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -26,7 +26,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     username: "",
     status: "pending",
   });
-  const [permission, setPermission] = useState([]);
+  const [permission, setPermission] = useState<String[]>([]);
 
   useEffect(() => {
     // setUserdata({ username: "testuser", status: "exit" });
@@ -109,8 +109,13 @@ export const Logout = () => {
   }
 };
 
-export const hasPermission = (permission: string) => {
-  if (permission.includes("*")) return true;
+export const hasPermission = (
+  userpermission: String[],
+  perm: String,
+): boolean => {
+  if (userpermission.includes("*")) {
+    return true;
+  }
 
-  return permission.includes(permission);
+  return userpermission.includes(perm);
 };
