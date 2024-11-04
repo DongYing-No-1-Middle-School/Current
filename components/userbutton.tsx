@@ -32,6 +32,7 @@ export default function UserButton() {
     isInvalid: false,
     errorMessage: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = () => {
     // useEffect(() => {
@@ -53,13 +54,14 @@ export default function UserButton() {
 
       return;
     }
-
+    setIsLoading(true);
     axios
       .post("/api/clients/login", {
         username: username.value,
         password: password.value,
       })
       .then((result) => {
+        setIsLoading(false);
         if (result.data.code === 200) {
           new Cookies().set("token", result.data.data.token, { path: "/" });
           location.reload();
@@ -72,6 +74,7 @@ export default function UserButton() {
         }
       })
       .catch((err) => {
+        setIsLoading(false);
         setPassword({
           value: password.value,
           isInvalid: true,
@@ -128,11 +131,17 @@ export default function UserButton() {
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Close
+                  关闭
                 </Button>
-                <Button color="primary" type="submit" onPress={handleLogin}>
-                  登录
-                </Button>
+                {isLoading ? (
+                  <Button color="primary" type="submit" onPress={handleLogin} isLoading>
+                    登录
+                  </Button>
+                ) : (
+                  <Button color="primary" type="submit" onPress={handleLogin}>
+                    登录
+                  </Button>
+                )}
               </ModalFooter>
             </>
           )}
