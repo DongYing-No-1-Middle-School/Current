@@ -49,7 +49,7 @@ def format_commit(commit):
 @webpage.route("/")
 def index():
     """Index page."""
-    return render_template("index.html", sentry_loader_script_url=current_app.config["sentry_loader_script_url"])
+    return render_template("index.html")
 
 
 @webpage.route("/favicon.ico")
@@ -60,13 +60,13 @@ def favicon():
 @webpage.route("/login")
 def login():
     """Login page."""
-    return render_template("login.html", sentry_loader_script_url=current_app.config["sentry_loader_script_url"])
+    return render_template("login.html")
 
 
 @webpage.route("/drafts")
 def draft():
     """Draft page."""
-    return render_template("drafts.html", sentry_loader_script_url=current_app.config["sentry_loader_script_url"])
+    return render_template("drafts.html")
 
 
 @webpage.route("/settings")
@@ -74,28 +74,28 @@ def settings():
     """Personal settings page."""
     commits = fetch_commits()
     changelog = ''.join(format_commit(commit) for commit in commits)
-    return render_template("settings.html", sentry_loader_script_url=current_app.config["sentry_loader_script_url"], version_number=VersionNumber, changelog=changelog)
+    return render_template("settings.html", version_number=VersionNumber, changelog=changelog)
 
 
 @webpage.route("/issue/new")
 def newissue():
     """Issue page."""
-    return render_template("newissue.html", sentry_loader_script_url=current_app.config["sentry_loader_script_url"])
+    return render_template("newissue.html")
 
 
 @webpage.route("/issue/<int:issue_id>")
 def issue(issue_id):
     """Issue page."""
-    return render_template("issue.html", sentry_loader_script_url=current_app.config["sentry_loader_script_url"], issue_id=issue_id)
+    return render_template("issue.html", issue_id=issue_id)
 
 
 @webpage.route("/issue/_example")
 def issue_example():
     """Issue example page."""
-    return render_template("issue_example.html", sentry_loader_script_url=current_app.config["sentry_loader_script_url"])
+    return render_template("issue_example.html")
 
 
 @webpage.route("/issue/<int:issue_id>/create")
 def new_entry(issue_id):
     """New entry page."""
-    return render_template("newentry.html", sentry_loader_script_url=current_app.config["sentry_loader_script_url"], issue_id=issue_id)
+    return render_template("newentry.html", issue_id=issue_id)

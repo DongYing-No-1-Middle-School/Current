@@ -84,15 +84,15 @@ export default function IssueDetail() {
 
     const totalCreated = entriesData.count.reduce(
       (sum, c) => sum + c.created,
-      0
+      0,
     );
     const totalReviewed = entriesData.count.reduce(
       (sum, c) => sum + c.reviewed,
-      0
+      0,
     );
     const totalSelected = entriesData.count.reduce(
       (sum, c) => sum + c.selected,
-      0
+      0,
     );
 
     // const chartData = {
@@ -163,14 +163,14 @@ export default function IssueDetail() {
           <section className="h-5" />
           {[1, 2, 3, 4].map((pageNum) => {
             const pageEntries = entriesData?.list.filter(
-              (entry) => entry.page === pageNum
+              (entry) => entry.page === pageNum,
             );
 
             return (
               <div key={pageNum} className="mb-8">
                 <h2 className="text-xl font-bold mb-4">第{pageNum}版</h2>
                 {pageEntries?.map((entry) => (
-                  <IssueEntry key={entry.uuid} entry={entry} />
+                  <IssueEntry key={entry.uuid} bare_entry={entry} />
                 ))}
                 {(!pageEntries || pageEntries.length === 0) && (
                   <Card className="w-full mb-3 bg-gray-50">
