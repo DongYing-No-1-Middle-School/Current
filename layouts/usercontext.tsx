@@ -11,6 +11,8 @@ interface Userdata {
 interface UserContextProps {
   userdata: Userdata;
   setUserdata: React.Dispatch<React.SetStateAction<Userdata>>;
+  permission: any;
+  setPermission: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -24,6 +26,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     username: "",
     status: "pending",
   });
+  const [permission, setPermission] = useState([]);
 
   useEffect(() => {
     // setUserdata({ username: "testuser", status: "exit" });
@@ -39,6 +42,21 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         .then((res) => {
           if (res.data.code === 200) {
             setUserdata({ username: res.data.data.username, status: "logged" });
+            // 请求权限数据
+            axios
+              .get("/api/clients/permissions", {
+                headers: {
+                  Authorization: token,
+                },
+              })
+              .then((permRes) => {
+                if (permRes.data.code === 200) {
+                  setPermission(permRes.data.data);
+                }
+              })
+              .catch(() => {
+                setPermission([]);
+              });
           } else {
             setUserdata({ username: "", status: "exit" });
           }
@@ -52,7 +70,9 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ userdata, setUserdata }}>
+    <UserContext.Provider
+      value={{ userdata, setUserdata, permission, setPermission }}
+    >
       {children}
     </UserContext.Provider>
   );
@@ -87,4 +107,10 @@ export const Logout = () => {
         window.location.reload();
       });
   }
+};
+
+export const hasPermission = (permission: string) => {
+  if (permission.includes("*")) return true;
+
+  return permission.includes(permission);
 };

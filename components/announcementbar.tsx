@@ -1,10 +1,11 @@
 "use client";
 import axios from "axios";
-import { Card, CardBody } from "@nextui-org/card";
+import { Card, CardHeader, CardBody } from "@nextui-org/card";
 import { useEffect, useState } from "react";
 import React from "react";
 import { Cookies } from "react-cookie";
 import { Skeleton } from "@nextui-org/skeleton";
+import { Presentation as PresentationIcon } from "lucide-react";
 
 export function AnnouncementBar() {
   const [announcement, setAnnouncement] = useState({
@@ -47,8 +48,11 @@ export function AnnouncementBar() {
           </Card>
         </Skeleton>
       ) : (
-        <Card className="shadow">
-          <CardBody className="p-5 text-blue-700 bg-blue-50">
+        <Card>
+          <CardHeader className="flex flex-row p-4 text-blue-700 bg-blue-50">
+            <PresentationIcon className="mr-2" /> 公告
+          </CardHeader>
+          <CardBody className="">
             <p>{announcement.content}</p>
           </CardBody>
         </Card>

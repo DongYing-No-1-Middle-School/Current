@@ -19,7 +19,7 @@ export default function DefaultLayout({
     <div className="relative flex flex-col h-screen">
       <Head />
       <Navbar />
-      <main className="mx-5 lg:mx-[20%] px-6 flex-grow pt-16">
+      <main className="mx-0 lg:mx-[18%] px-6 flex-grow pt-10">
         {userdata.status === "pending" ? (
           <Skeleton className="rounded-lg">
             <div className="h-96 rounded-lg bg-default-300" />
