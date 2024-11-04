@@ -32,10 +32,10 @@ export default function UserButton() {
     isInvalid: false,
     errorMessage: "",
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoginButtonLoading, setLoginButtonLoading] = useState(false);
+  const [isLogoutButtonLoading, setLogoutButtonLoading] = useState(false);
 
   const handleLogin = () => {
-    // useEffect(() => {
     if (username.value === "") {
       setUsername({
         value: username.value,
@@ -54,14 +54,14 @@ export default function UserButton() {
 
       return;
     }
-    setIsLoading(true);
+    setLoginButtonLoading(true);
     axios
       .post("/api/clients/login", {
         username: username.value,
         password: password.value,
       })
       .then((result) => {
-        setIsLoading(false);
+        setLoginButtonLoading(false);
         if (result.data.code === 200) {
           new Cookies().set("token", result.data.data.token, { path: "/" });
           location.reload();
@@ -74,7 +74,7 @@ export default function UserButton() {
         }
       })
       .catch(() => {
-        setIsLoading(false);
+        setLoginButtonLoading(false);
         setPassword({
           value: password.value,
           isInvalid: true,
@@ -82,6 +82,11 @@ export default function UserButton() {
         });
       });
     // });
+  };
+
+  const handleLogout = () => {
+    setLogoutButtonLoading(true);
+    Logout();
   };
 
   return (
@@ -133,7 +138,7 @@ export default function UserButton() {
                 <Button color="danger" variant="light" onPress={onClose}>
                   关闭
                 </Button>
-                {isLoading ? (
+                {isLoginButtonLoading ? (
                   <Button
                     isLoading
                     color="primary"
@@ -156,9 +161,19 @@ export default function UserButton() {
         {userdata.status === "logged" ? (
           <section className="flex flex-row items-center">
             <ButtonGroup>
-              <Button className="hidden sm:flex" onClick={Logout}>
-                退出登录
-              </Button>
+              {isLogoutButtonLoading ? (
+                <Button
+                  isLoading
+                  className="hidden sm:flex"
+                  onClick={handleLogout}
+                >
+                  退出登录
+                </Button>
+              ) : (
+                <Button className="hidden sm:flex" onClick={handleLogout}>
+                  退出登录
+                </Button>
+              )}
             </ButtonGroup>
             <p className="flex flex-row">
               &nbsp;
