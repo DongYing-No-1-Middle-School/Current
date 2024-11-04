@@ -5,9 +5,13 @@ import axios from "axios";
 import { Card, CardBody } from "@nextui-org/card";
 import { Cookies } from "react-cookie";
 import { Skeleton } from "@nextui-org/skeleton";
+import { Button, ButtonGroup } from "@nextui-org/button";
+import { PlusCircle as PlusCircleIcon } from "lucide-react";
+import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/breadcrumbs";
 
 import DefaultLayout from "@/layouts/default";
 import IssueEntry from "@/components/entry";
+// import NewEntryButton from "@/components/button/newentry";
 
 interface IssueInfo {
   date: number;
@@ -140,6 +144,14 @@ export default function IssueDetail() {
 
   return (
     <DefaultLayout>
+      <Breadcrumbs className="mb-5">
+        <BreadcrumbItem href="/">首页</BreadcrumbItem>
+        <BreadcrumbItem
+          onClick={() => {
+            router.push(`/issue/${issueid}`);
+          }}
+        >{`第 ${issueid} 期`}</BreadcrumbItem>
+      </Breadcrumbs>
       {isLoading ? (
         <>
           <Skeleton className="rounded-lg h-[80px] mb-5">
@@ -159,7 +171,30 @@ export default function IssueDetail() {
         </>
       ) : (
         <>
-          <DashboardStats />
+          {issueInfo?.ispublished === 0 ? (
+            <>
+              <DashboardStats />
+              <section className="h-5" />
+              <ButtonGroup>
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    router.push(`/issue/${issueid}/newentry`);
+                  }}
+                >
+                  <PlusCircleIcon /> 新建投稿
+                </Button>
+              </ButtonGroup>
+            </>
+          ) : (
+            <>
+              <iframe
+              title="查看 PDF"
+                src={`/api/issues/getpdf/${issueid}`}
+                className="w-full h-screen"
+                />
+            </>
+          )}
           <section className="h-5" />
           {[1, 2, 3, 4].map((pageNum) => {
             const pageEntries = entriesData?.list.filter(
