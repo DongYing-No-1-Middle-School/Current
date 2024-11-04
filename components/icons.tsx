@@ -196,11 +196,9 @@ interface UserIconProps extends IconSvgProps {
 
 export const UserIcon: React.FC<UserIconProps> = ({
   fill = "currentColor",
-  filled,
   size,
   height,
   width,
-  label,
   ...props
 }) => {
   return (

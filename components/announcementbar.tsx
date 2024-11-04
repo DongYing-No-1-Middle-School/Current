@@ -27,7 +27,7 @@ export function AnnouncementBar() {
           status: "success",
         });
       })
-      .catch((err) => {
+      .catch(() => {
         setAnnouncement({
           content: "获取公告失败，请稍后再试。",
           show_pdf: false,
@@ -47,7 +47,7 @@ export function AnnouncementBar() {
           </Card>
         </Skeleton>
       ) : (
-        <Card>
+        <Card className="shadow">
           <CardBody className="p-5 text-blue-700 bg-blue-50">
             <p>{announcement.content}</p>
           </CardBody>
