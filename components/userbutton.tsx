@@ -13,8 +13,7 @@ import {
 import { Input } from "@nextui-org/input";
 import axios from "axios";
 import { Cookies } from "react-cookie";
-
-import { UserIcon } from "./icons";
+import { User as UserIcon } from "lucide-react";
 
 import { Logout, useUser } from "@/layouts/usercontext";
 
