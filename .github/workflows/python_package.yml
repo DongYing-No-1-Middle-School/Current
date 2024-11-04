@@ -16,6 +16,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+    
+    - name: Change directory to backend
+      run: cd backend
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
