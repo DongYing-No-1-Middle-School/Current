@@ -16,7 +16,6 @@ import UserButton from "./userbutton";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { Logo } from "@/components/icons";
 import { useUser, Logout } from "@/layouts/usercontext";
 
 export const Navbar = () => {
@@ -27,7 +26,7 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            <img src="/current.png" alt="Current Logo" className="h-6" />
+            <img alt="Current Logo" className="h-6" src="/current.png" />
             <p className="font-bold text-inherit">Current</p>
           </NextLink>
         </NavbarBrand>
