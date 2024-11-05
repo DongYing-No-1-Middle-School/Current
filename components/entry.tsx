@@ -260,7 +260,7 @@ export default function IssueEntry({ bare_entry }: IssueEntryProps) {
                 }
               >
                 <ScanEyeIcon />
-                在线预览
+                <p className="hidden sm:block">在线预览</p>
               </Button>
               <Button
                 onClick={() =>
@@ -280,21 +280,21 @@ export default function IssueEntry({ bare_entry }: IssueEntryProps) {
               entry.status === "created" ? (
                 <Button onClick={handleReviewClick}>
                   <FileCheckIcon />
-                  审核
+                  <p className="hidden sm:block">审核</p>
                 </Button>
               ) : null}
               {hasPermission(userdata.permission, `entries.select.*`) &&
               entry.status === "reviewed" ? (
                 <Button onClick={handleSelectClick}>
                   <BoxesIcon />
-                  选录
+                  <p className="hidden sm:block">选录</p>
                 </Button>
               ) : null}
               {hasPermission(userdata.permission, `entries.select.*`) &&
               entry.status === "selected" ? (
                 <Button color="success" onClick={handleSelectClick}>
                   <BoxesIcon />
-                  选录
+                  <p className="hidden sm:block">选录</p>
                 </Button>
               ) : null}
             </ButtonGroup>
