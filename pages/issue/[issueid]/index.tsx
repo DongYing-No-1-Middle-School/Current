@@ -145,7 +145,13 @@ export default function IssueDetail() {
   return (
     <DefaultLayout>
       <Breadcrumbs className="mb-5">
-        <BreadcrumbItem href="/">首页</BreadcrumbItem>
+        <BreadcrumbItem
+          onClick={() => {
+            router.push(`/`);
+          }}
+        >
+          首页
+        </BreadcrumbItem>
         <BreadcrumbItem
           onClick={() => {
             router.push(`/issue/${issueid}`);
@@ -189,10 +195,10 @@ export default function IssueDetail() {
           ) : (
             <>
               <iframe
-              title="查看 PDF"
-                src={`/api/issues/getpdf/${issueid}`}
                 className="w-full h-screen"
-                />
+                src={`/api/issues/getpdf/${issueid}`}
+                title="查看 PDF"
+              />
             </>
           )}
           <section className="h-5" />

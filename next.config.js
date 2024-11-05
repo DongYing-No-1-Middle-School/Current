@@ -5,7 +5,24 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*', // 代理到目标地址
+        destination: 'http://localhost:5000/api/:path*',
+      },
+      // Compatible Layer
+      {
+        source: '/issue/new',
+        destination: 'http://localhost:5000//issue/new',
+      },
+      {
+        source: '/sudo',
+        destination: 'http://localhost:5000/sudo',
+      },
+      {
+        source: '/static/:path*',
+        destination: 'http://localhost:5000/static/:path*',
+      },
+      {
+        source: '/management/:path*',
+        destination: 'http://localhost:5000/management/:path*',
       },
     ];
   },
