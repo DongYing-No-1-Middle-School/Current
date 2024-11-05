@@ -8,9 +8,9 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { Cookies } from "react-cookie";
 import { closeSnackbar, enqueueSnackbar } from "notistack";
+import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/breadcrumbs";
 
 import DefaultLayout from "@/layouts/default";
-import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/breadcrumbs";
 
 export default function NewEntryButton() {
   const router = useRouter();
