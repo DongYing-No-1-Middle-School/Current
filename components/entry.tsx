@@ -268,12 +268,12 @@ export default function IssueEntry({ bare_entry }: IssueEntryProps) {
                 }
               >
                 <DownloadIcon />
-                下载
+                <p className="hidden sm:block">下载</p>
               </Button>
               {hasPermission(userdata.permission, `entries.delete.*`) ? (
                 <Button color="danger" onClick={onOpen}>
                   <TrashIcon />
-                  删除
+                  <p className="hidden sm:block">删除</p>
                 </Button>
               ) : null}
               {hasPermission(userdata.permission, `entries.review.*`) &&
