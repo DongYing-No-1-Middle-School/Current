@@ -30,7 +30,7 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">Current</p>
           </NextLink>
         </NavbarBrand>
-        <div className="hidden lg:flex gap-4 justify-start ml-2">
+        <div className="hidden sm:flex gap-4 justify-start ml-2">
           {userdata.status === "logged"
             ? siteConfig.navItems.map((item) => (
                 <NavbarItem key={item.href}>
