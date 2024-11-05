@@ -52,9 +52,9 @@ export function AnnouncementBar() {
           <CardHeader className="flex flex-row p-4 text-blue-700 bg-blue-50">
             <PresentationIcon className="mr-2" /> 公告
           </CardHeader>
-          <CardBody className="">
-            <p>{announcement.content}</p>
-          </CardBody>
+          <CardBody
+            dangerouslySetInnerHTML={{ __html: announcement.content }}
+          />
         </Card>
       )}
     </>

@@ -5,6 +5,8 @@ import axios from "axios";
 
 interface Userdata {
   username: string;
+  grade: number;
+  classnum: number;
   status: string;
 }
 
@@ -24,6 +26,8 @@ interface UserProviderProps {
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userdata, setUserdata] = useState<Userdata>({
     username: "",
+    grade: 0,
+    classnum: 0,
     status: "pending",
   });
   const [permission, setPermission] = useState<String[]>([]);
@@ -41,7 +45,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         })
         .then((res) => {
           if (res.data.code === 200) {
-            setUserdata({ username: res.data.data.username, status: "logged" });
+            setUserdata({
+              username: res.data.data.username,
+              grade: res.data.data.grade,
+              classnum: res.data.data.classnum,
+              status: "logged",
+            });
             // 请求权限数据
             axios
               .get("/api/clients/permissions", {
@@ -58,14 +67,29 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
                 setPermission([]);
               });
           } else {
-            setUserdata({ username: "", status: "exit" });
+            setUserdata({
+              username: "",
+              grade: 0,
+              classnum: 0,
+              status: "exit",
+            });
           }
         })
         .catch(() => {
-          setUserdata({ username: "", status: "exit" });
+          setUserdata({
+            username: "",
+            grade: 0,
+            classnum: 0,
+            status: "exit",
+          });
         });
     } else {
-      setUserdata({ username: "", status: "exit" });
+      setUserdata({
+        username: "",
+        grade: 0,
+        classnum: 0,
+        status: "exit",
+      });
     }
   }, []);
 
