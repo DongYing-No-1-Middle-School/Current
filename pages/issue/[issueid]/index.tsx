@@ -209,7 +209,14 @@ export default function IssueDetail() {
 
             return (
               <div key={pageNum} className="mb-8">
-                <h2 className="text-xl font-bold mb-4">第{pageNum}版</h2>
+                <h2 className="text-xl font-bold mb-4">
+                  第 {pageNum} 版
+                  <span className=" text-lg font-normal">
+                    {pageNum === 1
+                      ? " - 时事新闻"
+                      : ` - ${issueInfo?.subject[pageNum - 2]}`}
+                  </span>
+                </h2>
                 {pageEntries?.map((entry) => (
                   <IssueEntry key={entry.uuid} bare_entry={entry} />
                 ))}
