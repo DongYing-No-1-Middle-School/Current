@@ -9,10 +9,6 @@ const nextConfig = {
       },
       // Compatible Layer
       {
-        source: '/issue/new',
-        destination: 'http://localhost:5000//issue/new',
-      },
-      {
         source: '/sudo',
         destination: 'http://localhost:5000/sudo',
       },

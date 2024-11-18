@@ -144,26 +144,6 @@ export default function IndexPage() {
           <>
             <Card className="mb-5">
               <CardHeader>
-                <FlaskConicalIcon className="mr-3" />
-                Frontend Preview Experience Pack (Admin Only)
-              </CardHeader>
-              <CardBody className="space-y-2">
-                <p>Frontend Preview Experience Pack: Enabled.</p>
-                <p>Version: 20241105@nextui</p>
-                <p>Server: Next.js 14.2.4 (turbo)</p>
-                <p>Router: React-Router</p>
-                <p>Backend: http://localhost:3000/api/:path*</p>
-                <p>
-                  Using compatible layer:{" "}
-                  {
-                    '["issue:new_issue", "management:index", "management:announcement"]'
-                  }
-                </p>
-              </CardBody>
-            </Card>
-
-            <Card className="mb-5">
-              <CardHeader>
                 <WrenchIcon className="mr-3" />
                 管理面板 (Admin Only)
               </CardHeader>
