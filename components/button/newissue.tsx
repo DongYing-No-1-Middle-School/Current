@@ -5,15 +5,17 @@ import { useRouter } from "next/router";
 
 export default function NewIssueButton() {
   const router = useRouter();
-  const handleNewIssueButtonClick = () => {
-    window.location.href = "/issue/new";
-  };
 
   return (
     <>
-      <Button color="primary" onClick={handleNewIssueButtonClick}>
+      <Button
+        color="primary"
+        onClick={() => {
+          router.push("/newissue");
+        }}
+      >
         <CirclePlusButton />
-        新建期刊（兼容模式）
+        新建期刊
       </Button>
     </>
   );
