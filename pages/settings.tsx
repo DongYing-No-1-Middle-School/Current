@@ -6,7 +6,6 @@ import {
   ContactRound as ContactRoundIcon,
   Lock as LockIcon,
   SearchCheck as SearchCheckIcon,
-  FlaskConical as FlaskConicalIcon,
   Wrench as WrenchIcon,
 } from "lucide-react";
 import { Input } from "@nextui-org/input";

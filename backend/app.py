@@ -52,8 +52,6 @@ if config["sentry"]["enabled"]:
 app.app_context().push()
 
 # Register routes
-from routes.webpage import webpage
-app.register_blueprint(webpage)
 from routes.clients import clients
 app.register_blueprint(clients)
 from routes.issues import issues
