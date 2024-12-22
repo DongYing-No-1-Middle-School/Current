@@ -139,7 +139,7 @@ export default function NewIssue() {
           onChange={(value) => {
             setFormData((prevData) => ({
               ...prevData,
-              deadline: value.toDate(getLocalTimeZone()),
+              deadline: value ? value.toDate(getLocalTimeZone()) : new Date(),
             }));
           }}
         />
