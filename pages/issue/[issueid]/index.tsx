@@ -58,25 +58,21 @@ export default function IssueDetail() {
     if (!issueid) return;
 
     const fetchData = async () => {
-      try {
-        const config = {
-          headers: {
-            Authorization: new Cookies().get("token"),
-          },
-        };
+      const config = {
+        headers: {
+          Authorization: new Cookies().get("token"),
+        },
+      };
 
-        const [infoRes, entriesRes] = await Promise.all([
-          axios.get(`/api/issues/info/${issueid}`, config),
-          axios.get(`/api/entries/listissue/${issueid}`, config),
-        ]);
+      const [infoRes, entriesRes] = await Promise.all([
+        axios.get(`/api/issues/info/${issueid}`, config),
+        axios.get(`/api/entries/listissue/${issueid}`, config),
+      ]);
 
-        if (infoRes.data.success && entriesRes.data.success) {
-          setIssueInfo(infoRes.data.data);
-          setEntriesData(entriesRes.data.data);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+      if (infoRes.data.success && entriesRes.data.success) {
+        setIssueInfo(infoRes.data.data);
+        setEntriesData(entriesRes.data.data);
+        setIsLoading(false);
       }
     };
 

@@ -1,3 +1,5 @@
+const flask_backend = 'http://localhost:5000';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -5,20 +7,20 @@ const nextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*',
+        destination: `${flask_backend}/api/:path*`,
       },
       // Compatible Layer
       {
         source: '/sudo',
-        destination: 'http://localhost:5000/sudo',
+        destination: `${flask_backend}/sudo`,
       },
       {
         source: '/static/:path*',
-        destination: 'http://localhost:5000/static/:path*',
+        destination: `${flask_backend}/static/:path*`,
       },
       {
         source: '/management/:path*',
-        destination: 'http://localhost:5000/management/:path*',
+        destination: `${flask_backend}/management/:path*`,
       },
     ];
   },
