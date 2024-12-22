@@ -18,10 +18,10 @@ export default function IndexPage() {
         </BreadcrumbItem>
         <BreadcrumbItem
           onClick={() => {
-            router.push("/draft");
+            router.push("/statistic");
           }}
         >
-          草稿
+          统计
         </BreadcrumbItem>
       </Breadcrumbs>
       <section>

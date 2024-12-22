@@ -9,8 +9,8 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "草稿",
-      href: "/draft",
+      label: "统计",
+      href: "/statistic",
     },
     {
       label: "个人设置",
@@ -23,8 +23,8 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "草稿",
-      href: "/draft",
+      label: "统计",
+      href: "/statistic",
     },
     {
       label: "个人设置",
