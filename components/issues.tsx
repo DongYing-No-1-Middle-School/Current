@@ -47,7 +47,7 @@ export default function IssuesList() {
   const calculateRemainingDays = (date: number) => {
     const currentDate = new Date();
     const targetDate = new Date(date * 1000);
-    const diffTime = Math.abs(targetDate.getTime() - currentDate.getTime());
+    const diffTime = targetDate.getTime() - currentDate.getTime();
 
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
@@ -68,33 +68,48 @@ export default function IssuesList() {
           </Card>
         </Skeleton>
       ) : (
-        issuesList.issues.map((issue) => (
-          <Card
-            key={issue.id}
-            isPressable
-            className="w-full mb-3 cursor-pointer"
-            onPress={() => {
-              router.push(`/issue/${issue.id}`);
-            }}
-          >
-            <CardHeader className="flex flex-row p-4">
-              {issue.ispublished === 0 ? (
-                <CircleDashedIcon className="mr-3" />
-              ) : (
-                <CircleCheckBigIcon className="mr-3" color="green" />
-              )}
-              <p>{`第 ${issue.id} 期`}</p>
-            </CardHeader>
-            <CardBody className="">
-              <p>{`计划出版日期：${new Date(
-                issue.date * 1000,
-              ).toLocaleDateString()}`}</p>
-              {issue.ispublished === 0 && (
-                <p>{`剩余天数：${calculateRemainingDays(issue.date)} 天`}</p>
-              )}
-            </CardBody>
-          </Card>
-        ))
+        issuesList.issues
+          .slice()
+          .reverse()
+          .map((issue) => (
+            <Card
+              key={issue.id}
+              isPressable
+              className="w-full mb-3 cursor-pointer"
+              onPress={() => {
+                router.push(`/issue/${issue.id}`);
+              }}
+            >
+              <CardHeader className="flex flex-row p-4">
+                {issue.ispublished === 0 ? (
+                  <CircleDashedIcon className="mr-3" />
+                ) : (
+                  <CircleCheckBigIcon className="mr-3" color="green" />
+                )}
+                <p>{`第 ${issue.id} 期`}</p>
+              </CardHeader>
+              <CardBody className="">
+                {issue.ispublished === 0 ? (
+                  <>
+                    <p>{`截稿日期：${new Date(
+                      issue.date * 1000,
+                    ).toLocaleDateString()}`}</p>
+                    {calculateRemainingDays(issue.date) > 0 ? (
+                      <p
+                        style={{ color: "#006fee" }}
+                      >{`剩余天数：${calculateRemainingDays(issue.date)} 天`}</p>
+                    ) : (
+                      <p
+                        style={{ color: "#dd1111" }}
+                      >{`已超时天数：${-calculateRemainingDays(issue.date)} 天`}</p>
+                    )}
+                  </>
+                ) : (
+                  <p>已出版</p>
+                )}
+              </CardBody>
+            </Card>
+          ))
       )}
     </>
   );
