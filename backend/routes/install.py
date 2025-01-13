@@ -84,7 +84,7 @@ def index():
                 """create table sudo
             (
                 token        text           
-                username     text,
+                user         text,
                 activitytime integer
             );"""
             )
