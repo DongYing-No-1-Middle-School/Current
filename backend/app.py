@@ -31,7 +31,7 @@ if config["flask"]["debug"]:
 app.secret_key = os.urandom(24)
 
 # Initalize OrionDB
-oriondb = config["oriondb"]["path"]
+oriondb = "orion.db"
 app.config["oriondb"] = oriondb
 
 # Initalize Sentry
