@@ -136,7 +136,7 @@ def getannouncement():
     username = sessions.get_user(token)
     if not username:
         return {"code": 401, "success": False, "message": "Invalid token."}
-    if configuration.get("site.announcementpdf", default="") != "":
+    if configuration.get("site.announcementpdf") != "":
         show_pdf = True
     else:
         show_pdf = False
@@ -144,7 +144,7 @@ def getannouncement():
         "code": 200,
         "success": True,
         "data": {
-            "content": configuration.get("site.announcement", default="站点公告可在管理面板修改。"),
+            "content": configuration.get("site.announcement"),
             "show_pdf": show_pdf,
         }
     }
@@ -161,6 +161,6 @@ def getannouncementpdf():
     if not username:
         return {"code": 401, "success": False, "message": "Invalid token."}
     return send_file(
-        f"uploads/{configuration.get('site.announcementpdf', default='404.pdf')}",
+        f"uploads/{configuration.get('site.announcementpdf')}",
         as_attachment=False,
     )

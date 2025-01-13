@@ -16,6 +16,9 @@ permissions = orion.Permissions(oriondb)
 auditlog = orion.AuditLog(oriondb)
 configuration = orion.Configuration(oriondb)
 
+configuration.set_default("site.announcement", "str", "站点公告可在管理面板修改。")
+configuration.set_default("site.announcementpdf", "str", "")
+
 def get_sudo_user(token):
     """Check if user has sudo mode enabled"""
     conn = sqlite3.connect("current.db")
